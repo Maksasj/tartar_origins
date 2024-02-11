@@ -1,4 +1,4 @@
-file(GLOB_RECURSE TARTAR_ORIGINS_SRC_FILES *.cpp)
+file(GLOB_RECURSE TARTAR_ORIGINS_SRC_FILES *.c)
 
 include_directories("./")
 
