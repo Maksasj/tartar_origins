@@ -1,0 +1,3 @@
+[submodule "3dparty/tinycthread"]
+	path = 3dparty/tinycthread
+	url = https://github.com/tinycthread/tinycthread

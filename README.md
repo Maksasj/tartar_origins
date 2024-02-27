@@ -14,6 +14,7 @@ Very simple rpg game
 ## Classes
 - Warrior
 - Mage
+- 
 - Archer
 
 ## Equipment

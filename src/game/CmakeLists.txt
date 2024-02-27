@@ -1,5 +1,0 @@
-file(GLOB_RECURSE TARTAR_ORIGINS_SRC_FILES *.c)
-
-include_directories("./")
-
-add_executable(Tartar_Origins ${TARTAR_ORIGINS_SRC_FILES})

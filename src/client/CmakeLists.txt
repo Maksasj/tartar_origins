@@ -1,0 +1,7 @@
+file(GLOB_RECURSE TARTAR_ORIGINS_CLIENT_SRC_FILES *.c)
+
+include_directories("./")
+include_directories("../core")
+
+add_executable(TOClient ${TARTAR_ORIGINS_CLIENT_SRC_FILES})
+target_link_libraries(TOClient ws2_32)

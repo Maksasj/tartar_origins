@@ -1,0 +1,9 @@
+attributes:
+    life_attribute:
+        health: 10
+        max_health: 10
+    physical_attribute:
+        width: 1.2
+        height: 2.4
+        length: 3.6
+        mass: 5.1
