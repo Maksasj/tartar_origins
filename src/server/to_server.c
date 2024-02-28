@@ -3,6 +3,9 @@
 TOServer* to_new_server(unsigned int port) {
     TOServer* server = malloc(sizeof(TOServer));
 
+    server->world = to_create_world();
+    to_world_create_chunk(server->world, 0, 0);
+
     server->connectionIndex = 0;
     memset(&server->connections, 0, sizeof(Connection*) * TO_SERVER_MAX_CONNECTIONS);
 

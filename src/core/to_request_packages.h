@@ -5,8 +5,9 @@ typedef enum TOReqPackageType {
     TO_CLIENT_CONNECTION_REQUEST_PACKAGE,
 
     TO_CHARACTER_POSITION_UPDATE_REQUEST_PACKAGE,
-    TO_MAP_INFO_REQUEST_PACKAGE,
-    TO_CHARACTER_INFO_REQUEST_PACKAGE
+    TO_CHARACTER_INFO_REQUEST_PACKAGE,
+
+    TO_TILE_INFO_REQUEST_PACKAGE,
 } TOReqPackageType;
 
 // Request packages
@@ -20,9 +21,11 @@ typedef struct TOCharacterPosUpdateRequest {
     int newY;
 } TOCharacterPosUpdateRequest;
 
-typedef struct TOMapUpdateRequest {
+typedef struct TOTileInfoRequest {
     TOReqPackageType type;
-} TOMapUpdateRequest;
+    int xPos;
+    int yPos;
+} TOTileInfoRequest;
 
 typedef struct TOCharacterInfoRequest {
     TOReqPackageType type;

@@ -55,6 +55,8 @@ int main(){
     }
     printf("Successfully connected to server\n");
 
+    to_client_sync_character_info(client);
+
     while(1) {
         if(to_client_handle(client))
             break;

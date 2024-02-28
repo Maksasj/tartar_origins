@@ -1,7 +1,21 @@
 #include "to_client.h"
 
+#include "to_server.h"
+
+TOClientHandle* to_create_client_handle(struct TOServer* server, Connection* connection) {
+    TOClientHandle* handle = malloc(sizeof(TOClientHandle));
+
+    handle->server = server;
+    handle->connection = connection;
+
+    return handle;
+}
+
 int handle_client(void *ptr) {
-    Connection* connection = (Connection*) ptr;
+    TOClientHandle* handle = (TOClientHandle*) ptr;
+
+    Connection* connection = handle->connection;
+    TOServer* server = handle->server;
 
     char buffer[1024];
     memset(&buffer, 0, sizeof(buffer));
@@ -23,16 +37,23 @@ int handle_client(void *ptr) {
                 printf("TO_CHARACTER_POSITION_UPDATE_REQUEST_PACKAGE %d %d\n", request.newX, request.newY);
                 break;
             };
-            case TO_MAP_INFO_REQUEST_PACKAGE: {
-                // TOMapInfoResponse request;
-                // memcpy(&request, buffer, sizeof(TOMapInfoResponse));
+            case TO_TILE_INFO_REQUEST_PACKAGE: {
+                TOTileInfoRequest request;
+                memcpy(&request, buffer, sizeof(TOTileInfoRequest));
 
-                printf("TO_MAP_INFO_REQUEST_PACKAGE\n");
+                TOTileInfoResponse response;
+                response.type = TO_TILE_INFO_RESPONSE_PACKAGE;
+                response.tile = to_world_get_tile(server->world, request.xPos, request.yPos);
+
+                send(connection->c_socket, &response, sizeof(TOTileInfoResponse), 0);
+
+                printf("TO_TILE_INFO_RESPONSE_PACKAGE\n");
                 break;
             };
             case TO_CHARACTER_INFO_REQUEST_PACKAGE: {
                 TOCharacterInfoResponse response;
                 response.type = TO_CHARACTER_INFO_RESPONSE_PACKAGE;
+
                 response.stats = connection->character->stats;
                 response.xPos = connection->character->xPos;
                 response.yPos = connection->character->yPos;

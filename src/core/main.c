@@ -16,6 +16,7 @@ typedef struct Creature {
     Attribute* attributes;
 } Creature;
 
+
 // typedef struct LifeAttribute {
 // } LifeAttribute;
 //

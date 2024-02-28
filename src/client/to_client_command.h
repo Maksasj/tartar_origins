@@ -9,6 +9,8 @@ typedef struct TOClientCommand {
     TOClientCommandCallback* callback;
 } TOClientCommand;
 
+void to_client_sync_character_info(TOClient* client);
+
 void to_client_go_command_callback(TOClient* client, int argc, char* argv[]);
 void to_client_stats_command_callback(TOClient* client, int argc, char* argv[]);
 void to_client_map_command_callback(TOClient* client, int argc, char* argv[]);

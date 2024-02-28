@@ -14,6 +14,9 @@ typedef struct TOServer {
     // Active connections
     Connection* connections[TO_SERVER_MAX_CONNECTIONS];
     unsigned int connectionIndex;
+
+    // Gameplay
+    World* world;
 } TOServer;
 
 TOServer* to_new_server(unsigned int port);

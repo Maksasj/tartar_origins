@@ -58,7 +58,47 @@ void to_client_stats_command_callback(TOClient* client, int argc, char* argv[]) 
 }
 
 void to_client_map_command_callback(TOClient* client, int argc, char* argv[]) {
-    TOMapUpdateRequest request;
-    request.type = TO_MAP_INFO_REQUEST_PACKAGE;
-    send(client->socket, &request, sizeof(TOMapUpdateRequest), 0);
+    Tile tiles[16][16];
+
+    Character* character = client->character;
+
+    for(int x = 0; x < 16; ++x) {
+        for(int y = 0; y < 16; ++y) {
+            TOTileInfoRequest request;
+
+            request.type = TO_TILE_INFO_REQUEST_PACKAGE;
+            request.xPos = character->xPos + (x - 8);
+            request.yPos = character->yPos + (y - 8);
+
+            send(client->socket, &request, sizeof(TOTileInfoRequest), 0);
+
+            TOTileInfoResponse response;
+            recv(client->socket, &response, sizeof(TOTileInfoResponse), 0);
+            tiles[x][y] = response.tile;
+        }
+    }
+
+    printf("Map around (16x16):\n");
+
+    char characters[16][16];
+    memset(character, '.', sizeof(characters));
+
+    for(int x = 0; x < 16; ++x) {
+        for(int y = 0; y < 16; ++y) {
+            TileType type = tiles[x][y].type;
+
+            if(type == VOID_TILE)
+                characters[15 - y][x] = '.';
+            else if(type == GROUND_TILE)
+                characters[15 - y][x] = 'g';
+            else if(type == WATER_TILE)
+                characters[15 - y][x] = '~';
+        }
+    }
+
+    for(int y = 0; y < 16; ++y)
+        printf("%.16s\n", characters[y]);
+
+    // Todo this think should not be there
+    to_client_sync_character_info(client);
 }
