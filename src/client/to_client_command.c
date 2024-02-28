@@ -1,12 +1,10 @@
 #include "to_client_command.h"
 
 void to_client_sync_character_info(TOClient* client) {
-    TOCharacterInfoRequest request;
-    request.type = TO_CHARACTER_INFO_REQUEST_PACKAGE;
-    send(client->socket, &request, sizeof(TOCharacterInfoRequest), 0);
+    to_send_character_info_request(client->socket);
 
     TOCharacterInfoResponse response;
-    recv(client->socket, &response, sizeof(TOCharacterInfoResponse), 0);
+    to_recv_character_info_response(client->socket, &response);
 
     client->character->stats = response.stats;
     client->character->xPos = response.xPos;
@@ -14,21 +12,15 @@ void to_client_sync_character_info(TOClient* client) {
 }
 
 void to_client_go_command_callback(TOClient* client, int argc, char* argv[]) {
-    TOCharacterPosUpdateRequest request;
-    request.type = TO_CHARACTER_POSITION_UPDATE_REQUEST_PACKAGE;
-
-    request.newX = client->character->xPos;
-    request.newY = client->character->yPos;
-
     if(argc > 1) {
         if(strcmp(argv[1], "up") == 0) {
-            ++request.newY;
+            to_send_character_pos_update_request(client->socket, client->character->xPos, client->character->yPos + 1);
         } else if(strcmp(argv[1], "left") == 0) {
-            --request.newX;
+            to_send_character_pos_update_request(client->socket, client->character->xPos - 1, client->character->yPos);
         } else if(strcmp(argv[1], "right") == 0) {
-            ++request.newX;
+            to_send_character_pos_update_request(client->socket, client->character->xPos + 1, client->character->yPos);
         } else if(strcmp(argv[1], "down") == 0) {
-            --request.newY;
+            to_send_character_pos_update_request(client->socket, client->character->xPos, client->character->yPos - 1);
         } else {
             printf("Wrong destination '%s'", argv[1]);
         }
@@ -36,12 +28,12 @@ void to_client_go_command_callback(TOClient* client, int argc, char* argv[]) {
         printf("Wrong amount of arguments for 'go' command\n");
     }
 
-    send(client->socket, &request, sizeof(TOCharacterPosUpdateRequest), 0);
-
     to_client_sync_character_info(client);
 
     Character* character = client->character;
     printf("Now staying at (X = %d, Y = %d)\n", character->xPos, character->yPos);
+
+    to_client_map_command_callback(client, argc, argv);
 }
 
 void to_client_stats_command_callback(TOClient* client, int argc, char* argv[]) {
@@ -58,47 +50,74 @@ void to_client_stats_command_callback(TOClient* client, int argc, char* argv[]) 
 }
 
 void to_client_map_command_callback(TOClient* client, int argc, char* argv[]) {
-    Tile tiles[16][16];
-
     Character* character = client->character;
 
-    for(int x = 0; x < 16; ++x) {
-        for(int y = 0; y < 16; ++y) {
-            TOTileInfoRequest request;
+    Tile tiles[15][15];
 
-            request.type = TO_TILE_INFO_REQUEST_PACKAGE;
-            request.xPos = character->xPos + (x - 8);
-            request.yPos = character->yPos + (y - 8);
+    char map[15][15];
+    memset(map, '.', sizeof(map));
 
-            send(client->socket, &request, sizeof(TOTileInfoRequest), 0);
+    for(int x = 0; x < 15; ++x) {
+        for(int y = 0; y < 15; ++y) {
+            to_send_tile_info_request(client->socket, character->xPos + (x - 7), character->yPos + (y - 7));
 
             TOTileInfoResponse response;
-            recv(client->socket, &response, sizeof(TOTileInfoResponse), 0);
+            to_recv_tile_info_response(client->socket, &response);
             tiles[x][y] = response.tile;
         }
     }
 
-    printf("Map around (16x16):\n");
-
-    char characters[16][16];
-    memset(character, '.', sizeof(characters));
-
-    for(int x = 0; x < 16; ++x) {
-        for(int y = 0; y < 16; ++y) {
+    // Draw tiles
+    for(int x = 0; x < 15; ++x) {
+        for(int y = 0; y < 15; ++y) {
             TileType type = tiles[x][y].type;
 
             if(type == VOID_TILE)
-                characters[15 - y][x] = '.';
+                map[14 - y][x] = '*';
             else if(type == GROUND_TILE)
-                characters[15 - y][x] = 'g';
+                map[14 - y][x] = ',';
             else if(type == WATER_TILE)
-                characters[15 - y][x] = '~';
+                map[14 - y][x] = '~';
         }
     }
 
-    for(int y = 0; y < 16; ++y)
-        printf("%.16s\n", characters[y]);
+    // Draw player
+    map[7][7] = 'P';
+
+    // Draw near creatures
+    to_send_near_creatures_count_request(client->socket);
+
+    TONearCreaturesCountResponse response;
+    to_recv_near_creatures_count_response(client->socket, &response);
+
+    printf("Near creatures: %d\n", response.count);
+
+    for(int i = 0; i < response.count; ++i) {
+        to_send_near_creatures_info_request(client->socket, i);
+
+        TOCreatureInfoResponse response;
+        to_recv_creature_info_response(client->socket, &response);
+
+        if(!response.success)
+            break;
+
+        long long xPos = (response.creature.xPos - character->xPos) + 7;
+        long long yPos = (response.creature.yPos - character->yPos) + 7;
+
+        if((xPos >= 0 && xPos <= 14) && (yPos >= 0 && yPos <= 14)) {
+            if(response.creature.type == MONSTER_CREATURE) {
+                map[14 - yPos][xPos] = 'M';
+            } else if(response.creature.type == PLAYER_CREATURE) {
+                map[14 - yPos][xPos] = 'C';
+            }
+        }
+    }
+
+    printf("Map around (15x15):\n");
+
+    for(int y = 0; y < 15; ++y)
+        printf("%.15s\n", map[y]);
 
     // Todo this think should not be there
-    to_client_sync_character_info(client);
+    // to_client_sync_character_info(client);
 }

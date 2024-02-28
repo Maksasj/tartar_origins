@@ -6,6 +6,14 @@ TOServer* to_new_server(unsigned int port) {
     server->world = to_create_world();
     to_world_create_chunk(server->world, 0, 0);
 
+    // Todo
+    Creature creature;
+    creature.type = MONSTER_CREATURE;
+    creature.xPos = 5;
+    creature.yPos = 5;
+
+    to_world_summon_creature(server->world, creature);
+
     server->connectionIndex = 0;
     memset(&server->connections, 0, sizeof(Connection*) * TO_SERVER_MAX_CONNECTIONS);
 

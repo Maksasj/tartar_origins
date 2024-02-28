@@ -2,7 +2,7 @@
 #define _TO_SERVER_H_
 
 #include "to_backend.h"
-#include "to_client.h"
+#include "to_client_handle.h"
 #include "to_connection.h"
 
 #define TO_SERVER_MAX_CONNECTIONS 256

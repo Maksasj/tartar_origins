@@ -9,7 +9,7 @@ int main() {
         Connection* con = to_server_accept_connections(server);
         TOClientHandle* handle = to_create_client_handle(server, con);
 
-        if (thrd_create(&con->thread, handle_client, (void*) handle) != thrd_success) {
+        if (thrd_create(&con->thread, to_handle_client, (void*) handle) != thrd_success) {
             printf("Error:unable to create thread 1");
             return 1;
         }

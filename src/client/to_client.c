@@ -22,12 +22,10 @@ int to_client_connect(TOClient* client, const char* api, unsigned long port) {
     }
 
     // There we handle connection packages
-    TOClientConnectionRequest request;
-    request.type = TO_CLIENT_CONNECTION_REQUEST_PACKAGE;
-    send(client->socket, &request, sizeof(TOClientConnectionRequest), 0);
+    to_send_client_connection_request(client->socket);
 
     TOClientConnectionResponse response;
-    recv(client->socket, &response, sizeof(TOClientConnectionResponse), 0);
+    to_recv_client_connection_response(client->socket, &response);
 
     if(response.success) {
         client->character = malloc(sizeof(Character));

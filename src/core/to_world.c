@@ -6,9 +6,23 @@ World* to_create_world() {
 
     world->chunkCount = 0;
     world->chunks = NULL;
+    memset(world->creatures, 0, sizeof(world->creatures));
 
     return world;
 };
+
+Creature* to_world_summon_creature(World* world, Creature creature) {
+    for(int i = 0; i < 1024; ++i) {
+        if(world->creatures[i] == NULL) {
+            world->creatures[i] = malloc(sizeof(Creature));
+            *world->creatures[i] = creature;
+
+            return world->creatures[i];
+        }
+    }
+
+    return NULL;
+}
 
 Tile to_create_tile(TileType type) {
     Tile tile;

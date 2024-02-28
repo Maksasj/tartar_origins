@@ -2,7 +2,7 @@
 #define _TO_SERVER_BACKEND_H_
 
 #ifdef _WIN32
-    #include <winsock2.h>
+    #include <WinSock2.h>
     #define socklen_t int
     #include <io.h>
 #else
@@ -17,7 +17,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <tinycthread.h>
+#include "tinycthread.h"
 
 #include "to_core.h"
 
