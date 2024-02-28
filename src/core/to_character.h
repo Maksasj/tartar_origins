@@ -14,6 +14,9 @@ typedef struct StatBlock {
 
 typedef struct Character {
     StatBlock stats;
+
+    int xPos;
+    int yPos;
 } Character;
 
 typedef enum CombatClass {

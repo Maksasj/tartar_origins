@@ -3,6 +3,9 @@
 Character* to_create_character(CombatClass combatClass) {
     Character* character = malloc(sizeof(Character));
 
+    character->xPos = 0;
+    character->yPos = 0;
+
     switch (combatClass) {
         case WARRIOR: {
             character->stats.stamina = 4;

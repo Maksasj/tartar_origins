@@ -17,6 +17,9 @@ int handle_client(void *ptr) {
                 TOCharacterPosUpdateRequest request;
                 memcpy(&request, buffer, sizeof(TOCharacterPosUpdateRequest));
 
+                connection->character->xPos = request.newX;
+                connection->character->yPos = request.newY;
+
                 printf("TO_CHARACTER_POSITION_UPDATE_REQUEST_PACKAGE %d %d\n", request.newX, request.newY);
                 break;
             };
@@ -31,8 +34,8 @@ int handle_client(void *ptr) {
                 TOCharacterInfoResponse response;
                 response.type = TO_CHARACTER_INFO_RESPONSE_PACKAGE;
                 response.stats = connection->character->stats;
-                response.posX = 0;
-                response.posY = 0;
+                response.xPos = connection->character->xPos;
+                response.yPos = connection->character->yPos;
 
                 send(connection->c_socket, &response, sizeof(TOCharacterInfoResponse), 0);
 

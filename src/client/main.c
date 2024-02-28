@@ -3,7 +3,10 @@
 
 TOClientCommand commands[] = {
     { "go",     to_client_go_command_callback       },
+
+    { "info",   to_client_stats_command_callback    },
     { "stats",  to_client_stats_command_callback    },
+
     { "map",    to_client_map_command_callback      },
 };
 unsigned int commandCount = sizeof(commands) / sizeof(TOClientCommand);
@@ -44,7 +47,13 @@ int to_client_handle(TOClient* client) {
 int main(){
     TOClient* client = to_new_client();
 
-    to_client_connect(client, "127.0.0.1", 6969);
+    printf("Trying to connect\n");
+    int res = to_client_connect(client, "127.0.0.1", 6969);
+    if(!res) {
+        printf("Failed to conenct\n");
+        return 1;
+    }
+    printf("Successfully connected to server\n");
 
     while(1) {
         if(to_client_handle(client))

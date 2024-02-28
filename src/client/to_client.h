@@ -7,9 +7,11 @@
 
 typedef struct TOClient {
     int socket;
+
+    Character* character;
 } TOClient;
 
-void to_client_connect(TOClient* client, const char* api, unsigned long port);
+int to_client_connect(TOClient* client, const char* api, unsigned long port);
 
 TOClient* to_new_client();
 

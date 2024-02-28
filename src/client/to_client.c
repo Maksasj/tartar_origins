@@ -1,6 +1,6 @@
 #include "to_client.h"
 
-void to_client_connect(TOClient* client, const char* api, unsigned long port) {
+int to_client_connect(TOClient* client, const char* api, unsigned long port) {
     struct sockaddr_in servaddr;
 
     memset(&servaddr,0,sizeof(servaddr));
@@ -18,8 +18,23 @@ void to_client_connect(TOClient* client, const char* api, unsigned long port) {
 
     if (connect(client->socket, (struct sockaddr*)&servaddr, sizeof(servaddr)) < 0){
         fprintf(stderr,"ERROR #4: error in connect().\n");
-        exit(1);
+        return 0;
     }
+
+    // There we handle connection packages
+    TOClientConnectionRequest request;
+    request.type = TO_CLIENT_CONNECTION_REQUEST_PACKAGE;
+    send(client->socket, &request, sizeof(TOClientConnectionRequest), 0);
+
+    TOClientConnectionResponse response;
+    recv(client->socket, &response, sizeof(TOClientConnectionResponse), 0);
+
+    if(response.success) {
+        client->character = malloc(sizeof(Character));
+        *client->character = response.character;
+    }
+
+    return response.success;
 }
 
 TOClient* to_new_client() {
