@@ -4,30 +4,37 @@ int handle_client(void *ptr) {
     Connection* connection = (Connection*) ptr;
 
     char buffer[1024];
-    memset(&buffer,0,sizeof(buffer));
+    memset(&buffer, 0, sizeof(buffer));
 
     while(1) {
+        int len = recv(connection->c_socket, buffer, sizeof(buffer), 0);
+
         TOReqPackageType type;
-        int len = recv(connection->c_socket, &type, sizeof(TOReqPackageType), 0);
+        memcpy(&type, buffer, sizeof(TOReqPackageType));
 
         switch (type) {
             case TO_CHARACTER_POSITION_UPDATE_REQUEST_PACKAGE: {
-                TOMapInfoResponse response;
-                response.type = TO_CHARACTER_POSITION_UPDATE_REQUEST_PACKAGE;
+                TOCharacterPosUpdateRequest request;
+                memcpy(&request, buffer, sizeof(TOCharacterPosUpdateRequest));
 
-                printf("TO_CHARACTER_POSITION_UPDATE_REQUEST_PACKAGE\n");
+                printf("TO_CHARACTER_POSITION_UPDATE_REQUEST_PACKAGE %d %d\n", request.newX, request.newY);
                 break;
             };
             case TO_MAP_INFO_REQUEST_PACKAGE: {
-                TOMapInfoResponse response;
-                response.type = TO_MAP_INFO_REQUEST_PACKAGE;
+                // TOMapInfoResponse request;
+                // memcpy(&request, buffer, sizeof(TOMapInfoResponse));
 
                 printf("TO_MAP_INFO_REQUEST_PACKAGE\n");
                 break;
             };
             case TO_CHARACTER_INFO_REQUEST_PACKAGE: {
-                TOMapInfoResponse response;
-                response.type = TO_CHARACTER_INFO_REQUEST_PACKAGE;
+                TOCharacterInfoResponse response;
+                response.type = TO_CHARACTER_INFO_RESPONSE_PACKAGE;
+                response.stats = connection->character->stats;
+                response.posX = 0;
+                response.posY = 0;
+
+                send(connection->c_socket, &response, sizeof(TOCharacterInfoResponse), 0);
 
                 printf("TO_CHARACTER_INFO_REQUEST_PACKAGE\n");
                 break;

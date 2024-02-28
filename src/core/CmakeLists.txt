@@ -1,1 +1,3 @@
-add_library(TOCore STATIC cyml.c)
+file(GLOB_RECURSE TARTAR_ORIGINS_CORE_SRC_FILES *.c)
+
+add_library(TOCore STATIC ${TARTAR_ORIGINS_CORE_SRC_FILES})

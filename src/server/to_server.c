@@ -43,16 +43,14 @@ Connection* to_server_accept_connections(TOServer* server) {
     memset(&clientaddr,0, sizeof(clientaddr));
 
     socklen_t clientaddrlen = sizeof(struct sockaddr);
-    int c_socket = accept(server->socket,(struct sockaddr*)&clientaddr,&clientaddrlen);
+    int socket = accept(server->socket,(struct sockaddr*)&clientaddr,&clientaddrlen);
 
-    if (c_socket < 0){
+    if (socket < 0){
         fprintf(stderr,"ERROR #5: error occured accepting connection.\n");
         exit(1);
     }
 
-    Connection* connection = malloc(sizeof(Connection));
-    connection->c_socket = c_socket;
-    memcpy(&connection->clientaddr, &clientaddr, sizeof(clientaddr));
+    Connection* connection = to_new_connection(socket, clientaddr);
 
     return connection;
 }

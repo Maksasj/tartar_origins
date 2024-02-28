@@ -1,56 +1,54 @@
 #include "to_client.h"
+#include "to_client_command.h"
 
-#define BUFFLEN 1023
+TOClientCommand commands[] = {
+    { "go",     to_client_go_command_callback       },
+    { "stats",  to_client_stats_command_callback    },
+    { "map",    to_client_map_command_callback      },
+};
+unsigned int commandCount = sizeof(commands) / sizeof(TOClientCommand);
 
-int main(int argc, char *argv[]){
+int to_client_handle(TOClient* client) {
+    printf("> ");
+
+    char input[BUFFLEN];
+    if (fgets(input, sizeof(input), stdin) == NULL) {
+        printf("Failed to fgets command\n");
+        return 0;
+    }
+
+    input[strcspn(input, "\n")] = '\0';
+
+    char *argv[10];
+    int argc = 0;
+
+    char *token = strtok(input, " \t"); // Split based on spaces and tabs
+    while (token != NULL && argc < 10) {
+        argv[argc++] = token;
+        token = strtok(NULL, " \t");
+    }
+
+    if(argc == 0)
+        return 0;
+
+    for(unsigned int i = 0; i < commandCount; ++i) {
+        if(strcmp(argv[0], commands[i].command) == 0) {
+            commands[i].callback(client, argc, argv);
+            break;
+        }
+    }
+
+    return 0;
+}
+
+int main(){
     TOClient* client = to_new_client();
 
     to_client_connect(client, "127.0.0.1", 6969);
 
     while(1) {
-        char input[BUFFLEN];
-        if (fgets(input, sizeof(input), stdin) == NULL) {
-            // Error or end of input
+        if(to_client_handle(client))
             break;
-        }
-
-        // Remove newline character if present
-        input[strcspn(input, "\n")] = '\0';
-
-        char *token = strtok(input, " ");
-        if (token == NULL) {
-            printf("Invalid command\n");
-            continue;
-        }
-
-        if (strcmp(token, "go") == 0) {
-            token = strtok(NULL, " ");
-            if (token == NULL) {
-                printf("Invalid command\n");
-                continue;
-            }
-
-            TOCharacterPosUpdateRequest request;
-            request.type = TO_CHARACTER_POSITION_UPDATE_REQUEST_PACKAGE;
-            send(client->socket, &request, sizeof(TOCharacterPosUpdateRequest),0);
-        } else if (strcmp(token, "stats") == 0) {
-            TOCharacterInfoRequest request;
-            request.type = TO_CHARACTER_INFO_REQUEST_PACKAGE;
-            send(client->socket, &request, sizeof(TOCharacterInfoRequest),0);
-        } else if (strcmp(token, "map") == 0) {
-            TOMapUpdateRequest request;
-            request.type = TO_MAP_INFO_REQUEST_PACKAGE;
-            send(client->socket, &request, sizeof(TOMapUpdateRequest),0);
-        } else {
-            printf("Invalid command\n");
-        }
-
-        printf("Send\n");
-
-        // memset(&buffer, 0, BUFFLEN);
-
-        // recv(client->socket, buffer, BUFFLEN, 0);
-        // printf("Server sent: %s\n", buffer);
     }
 
     close(client->socket);
