@@ -11,10 +11,10 @@ World* to_create_world() {
     return world;
 };
 
-Creature* to_world_summon_creature(World* world, Creature creature) {
+Entity* to_world_summon_creature(World* world, Entity creature) {
     for(int i = 0; i < 1024; ++i) {
         if(world->creatures[i] == NULL) {
-            world->creatures[i] = malloc(sizeof(Creature));
+            world->creatures[i] = malloc(sizeof(Entity));
             *world->creatures[i] = creature;
 
             return world->creatures[i];
@@ -24,6 +24,7 @@ Creature* to_world_summon_creature(World* world, Creature creature) {
     return NULL;
 }
 
+/*
 Tile to_create_tile(TileType type) {
     Tile tile;
 
@@ -31,14 +32,32 @@ Tile to_create_tile(TileType type) {
 
     return tile;
 }
+*/
 
+/*
 void to_chunk_fill_tiles(Chunk* chunk, Tile tile) {
     for(unsigned int x = 0; x < 16; ++x) {
         for(unsigned int y = 0; y < 16; ++y) {
-            chunk->tiles[x][y] = tile;
+            chunk->tiles[x][y] = malloc(sizeof(Tile));
+            *chunk->tiles[x][y] = tile;
         }
     }
 }
+*/
+
+void todo_fill_chunk(Chunk* chunk) {
+    for(unsigned int x = 0; x < 16; ++x) {
+        for(unsigned int y = 0; y < 16; ++y) {
+            chunk->tiles[x][y] = to_create_entity(x, y);
+
+            Attribute* a0 = to_create_tag_attribute("Ground");
+            to_entity_add_attribute(chunk->tiles[x][y], a0);
+
+            to_entity_stringify(chunk->tiles[x][y]);
+        }
+    }
+}
+
 
 void to_world_create_chunk(World* world, long long xChunk, long long yChunk) {
     if(world->chunks == NULL) {
@@ -51,7 +70,10 @@ void to_world_create_chunk(World* world, long long xChunk, long long yChunk) {
     chunk->xChunk = xChunk;
     chunk->yChunk = yChunk;
 
-    to_chunk_fill_tiles(chunk, to_create_tile(GROUND_TILE));
+    // Todo
+    todo_fill_chunk(chunk);
+
+    // to_chunk_fill_tiles(chunk, to_create_tile(GROUND_TILE));
     ++world->chunkCount;
 }
 
@@ -66,7 +88,8 @@ Chunk* to_world_get_chunk(World* world, long long xChunk, long long yChunk) {
     return NULL;
 }
 
-Tile to_world_get_tile(World* world, long long xPos, long long yPos) {
+/*
+Tile* to_world_get_tile(World* world, long long xPos, long long yPos) {
     long long xChunk = xPos >> 4;
     long long yChunk = yPos >> 4;
 
@@ -79,3 +102,4 @@ Tile to_world_get_tile(World* world, long long xPos, long long yPos) {
 
     return chunk->tiles[xRelative][yRelative];
 };
+*/

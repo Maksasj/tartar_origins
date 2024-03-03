@@ -12,7 +12,7 @@ typedef struct Connection {
     struct sockaddr_in clientaddr;
 
     // Gameplay
-    Character* character;
+    Entity* character;
 } Connection;
 
 Connection* to_new_connection(int socket, struct sockaddr_in clientaddr);

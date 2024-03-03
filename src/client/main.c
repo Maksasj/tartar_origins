@@ -2,12 +2,14 @@
 #include "to_client_command.h"
 
 TOClientCommand commands[] = {
-    { "go",     to_client_go_command_callback       },
-
-    { "info",   to_client_stats_command_callback    },
-    { "stats",  to_client_stats_command_callback    },
-
-    { "map",    to_client_map_command_callback      },
+    { "self", to_client_get_self_entity_callback },
+    { "use", to_client_use_callback }
+    // { "go",     to_client_go_command_callback       },
+//
+    // { "info",   to_client_stats_command_callback    },
+    // { "stats",  to_client_stats_command_callback    },
+//
+    // { "map",    to_client_map_command_callback      },
 };
 unsigned int commandCount = sizeof(commands) / sizeof(TOClientCommand);
 
@@ -55,7 +57,7 @@ int main(){
     }
     printf("Successfully connected to server\n");
 
-    to_client_sync_character_info(client);
+    // to_client_sync_character_info(client);
 
     while(1) {
         if(to_client_handle(client))

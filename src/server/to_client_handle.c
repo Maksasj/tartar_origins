@@ -11,10 +11,12 @@ TOClientHandle* to_create_client_handle(struct TOServer* server, Connection* con
     return handle;
 }
 
+
 void to_handle_client_connection_request_packet(TOClientHandle* handle, void* buffer, unsigned long long length) {
     // Todo
 }
 
+/*
 void to_handle_character_position_update_request_packet(TOClientHandle* handle, void* buffer, unsigned long long length) {
     Connection* connection = handle->connection;
 
@@ -30,15 +32,7 @@ void to_handle_character_position_update_request_packet(TOClientHandle* handle, 
 void to_handle_character_info_request_packet(TOClientHandle* handle, void* buffer, unsigned long long length) {
     Connection* connection = handle->connection;
 
-    TOCharacterInfoResponse response;
-    response.type = TO_CHARACTER_INFO_RESPONSE_PACKAGE;
-
-    response.stats = connection->character->stats;
-    response.xPos = connection->character->xPos;
-    response.yPos = connection->character->yPos;
-
-    send(connection->c_socket, &response, sizeof(TOCharacterInfoResponse), 0);
-
+    to_send_character_info_response(connection->c_socket, connection->character->xPos, connection->character->yPos);
     printf("TO_CHARACTER_INFO_REQUEST_PACKAGE\n");
 }
 
@@ -49,11 +43,7 @@ void to_handle_tile_info_request_packet(TOClientHandle* handle, void* buffer, un
     TOTileInfoRequest request;
     memcpy(&request, buffer, sizeof(TOTileInfoRequest));
 
-    TOTileInfoResponse response;
-    response.type = TO_TILE_INFO_RESPONSE_PACKAGE;
-    response.tile = to_world_get_tile(server->world, request.xPos, request.yPos);
-
-    send(connection->c_socket, &response, sizeof(TOTileInfoResponse), 0);
+    to_send_tile_info_response(connection->c_socket, to_world_get_tile(server->world, request.xPos, request.yPos));
 
     printf("TO_TILE_INFO_RESPONSE_PACKAGE\n");
 }
@@ -62,20 +52,14 @@ void to_near_creatures_count_request_packet(TOClientHandle* handle, void* buffer
     Connection* connection = handle->connection;
     TOServer* server = handle->server;
 
-    TONearCreaturesCountResponse response;
-
-    response.type = TO_NEAR_CREATURES_COUNT_RESPONSE_PACKAGE;
-    response.count = 0;
-
-    for(unsigned int i = 0; i < 1024; ++i) {
+    unsigned int count = 0;
+    for(unsigned int i = 0; i < 1024; ++i)
         if(server->world->creatures[i] != NULL)
-            ++response.count;
-    }
+            ++count;
 
-    response.count += (server->connectionIndex - 1);
+    count += (server->connectionIndex - 1);
 
-    send(connection->c_socket, &response, sizeof(TONearCreaturesCountResponse), 0);
-
+    to_send_near_creatures_response(connection->c_socket, count);
     printf("TO_NEAR_CREATURES_COUNT_REQUEST_PACKAGE\n");
 }
 
@@ -84,14 +68,13 @@ void to_near_creatures_info_request_packet(TOClientHandle* handle, void* buffer,
     TOServer* server = handle->server;
 
     unsigned int index = 0;
-    Creature creature[1024];
+    CreatureInfo creature[1024];
 
     for(unsigned int i = 0; i < 1024; ++i) {
         if(server->world->creatures[i] == NULL)
             continue;
 
-        creature[index].type = MONSTER_CREATURE;
-        creature[index].stats = server->world->creatures[i]->stats;
+        // creature[index].type = MONSTER_CREATURE;
         creature[index].xPos = server->world->creatures[i]->xPos;
         creature[index].yPos = server->world->creatures[i]->yPos;
         ++index;
@@ -101,8 +84,7 @@ void to_near_creatures_info_request_packet(TOClientHandle* handle, void* buffer,
         if(server->connections[i] == handle->connection)
             continue;
 
-        creature[index].type = PLAYER_CREATURE;
-        creature[index].stats = server->connections[i]->character->stats;
+        // creature[index].type = PLAYER_CREATURE;
         creature[index].xPos = server->connections[i]->character->xPos;
         creature[index].yPos = server->connections[i]->character->yPos;
         ++index;
@@ -113,18 +95,39 @@ void to_near_creatures_info_request_packet(TOClientHandle* handle, void* buffer,
 
     if(request.index > index) {
         TOCreatureInfoResponse response;
-        response.type = TO_CREATURE_INFO_RESPONSE_PACKAGE;
-        response.success = 0;
+        response.info.type = TO_CREATURE_INFO_RESPONSE_PACKAGE;
+        response.info.success = 0;
         send(connection->c_socket, &response, sizeof(TOCreatureInfoResponse), 0);
     }
 
-    TOCreatureInfoResponse response;
-    response.type = TO_CREATURE_INFO_RESPONSE_PACKAGE;
-    response.success = 1;
-    response.creature = creature[request.index];
-    send(connection->c_socket, &response, sizeof(TOCreatureInfoResponse), 0);
-
+    to_send_creature_info_response(connection->c_socket, creature[request.index]);
     printf("TO_NEAR_CREATURES_INFO_REQUEST_PACKAGE\n");
+}
+*/
+
+void to_handle_get_self_entity_request_packet(TOClientHandle* handle, void* buffer, unsigned long long length) {
+    Entity* self = handle->connection->character;
+    to_send_entity_response(handle->connection->c_socket, self);
+
+    printf("AAAAAA\n");
+}
+
+void to_handle_use_request_packet(TOClientHandle* handle, void* buffer, unsigned long long length) {
+    TOUseRequest request;
+    memcpy(&request, buffer, sizeof(TOUseRequest));
+
+    if(request.argc <= 0)
+        return;
+
+    Entity* domain = handle->connection->character;
+    unsigned int count = domain->attributeCount;
+
+    for(int i = 0; i < count; ++i) {
+        Attribute* attribute = domain->attributes[i];
+
+        if((attribute != NULL) && attribute->info.type == EFFECT_ATTRIBUTE)
+            attribute->effect.effect(attribute, domain, NULL, request.argc, request.argv);
+    }
 }
 
 int to_handle_client(void *ptr) {
@@ -137,13 +140,17 @@ int to_handle_client(void *ptr) {
     TOClientHandlePacketCallback callbacks[] = {
         { TO_CLIENT_CONNECTION_REQUEST_PACKAGE,         NULL },
 
+        { TO_GET_SELF_ENTITY_REQUEST_PACKAGE, to_handle_get_self_entity_request_packet },
+        { TO_USE_REQUEST_PACKAGE, to_handle_use_request_packet }
+        /*
         { TO_CHARACTER_POSITION_UPDATE_REQUEST_PACKAGE, to_handle_character_position_update_request_packet },
         { TO_CHARACTER_INFO_REQUEST_PACKAGE,            to_handle_character_info_request_packet },
 
-        { TO_TILE_INFO_REQUEST_PACKAGE,                 to_handle_tile_info_request_packet },
+        // { TO_TILE_INFO_REQUEST_PACKAGE,                 to_handle_tile_info_request_packet },
 
         { TO_NEAR_CREATURES_COUNT_REQUEST_PACKAGE,      to_near_creatures_count_request_packet },
         { TO_NEAR_CREATURES_INFO_REQUEST_PACKAGE,       to_near_creatures_info_request_packet }
+        */
     };
     unsigned long long callbackCount = sizeof(callbacks) / sizeof(TOClientHandlePacketCallback);
 
