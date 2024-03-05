@@ -9,15 +9,6 @@ void to_send_client_connection_request(int socket) {
     send(socket, &request, sizeof(TOClientConnectionRequest), 0);
 }
 
-void to_send_get_self_entity_request(int socket) {
-    TOGetSelfEntityRequest request;
-
-    request.info.type = TO_GET_SELF_ENTITY_REQUEST_PACKAGE;
-    request.info.success = 1;
-
-    send(socket, &request, sizeof(TOGetSelfEntityRequest), 0);
-}
-
 void to_send_use_request(int socket, unsigned int argc, char argv[16][16]) {
     TOUseRequest request;
 
