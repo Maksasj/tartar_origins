@@ -19,28 +19,25 @@ Attribute* to_create_tag_attribute(char* name) {
     return attribute;
 }
 
-EffectResult* to_create_effect_result() {
-    EffectResult* result = malloc(sizeof(EffectResult));
+Attribute* to_create_value_attribute(char* name, unsigned long long value) {
+    if(name == NULL)
+        return NULL;
 
-    result->count = 0;
-    result->entities = NULL;
+    unsigned int length = strlen(name);
 
-    return result;
-}
+    if(length >= 16)
+        return NULL;
 
-void to_append_effect_result(EffectResult* result, struct Entity* entity) {
-    if(result->entities == NULL)
-        result->entities = malloc(sizeof(struct Entity*));
-    else
-        result->entities = realloc(result->entities, (result->count + 1) * sizeof(struct Entity*)); // Todo fix realloc
+    Attribute* attribute = malloc(sizeof(Attribute));
 
-    result->entities[result->count] = entity;
-    ++result->count;
-}
+    strcpy(attribute->info.name, name);
+    attribute->info.type = VALUE_ATTRIBUTE;
+    attribute->info.class = 0;
+    attribute->info.variation = 0;
 
-void to_free_effect_result(EffectResult* result) {
-    free(result->entities);
-    free(result);
+    attribute->value.value = value;
+
+    return attribute;
 }
 
 Attribute* to_create_effect_attribute(char* name, EffectCallback* effect) {
@@ -64,17 +61,40 @@ Attribute* to_create_effect_attribute(char* name, EffectCallback* effect) {
     return attribute;
 }
 
+Attribute* to_create_set_attribute(char* name) {
+    if(name == NULL)
+        return NULL;
+
+    unsigned int length = strlen(name);
+
+    if(length >= 16)
+        return NULL;
+
+    Attribute* attribute = malloc(sizeof(Attribute));
+
+    strcpy(attribute->info.name, name);
+    attribute->info.type = SET_ATTRIBUTE;
+    attribute->info.class = 0;
+    attribute->info.variation = 0;
+
+    attribute->set.count = 0;
+    memset(attribute->set.attributes, 0, 16 * sizeof(Attribute*));
+
+    return attribute;
+}
 
 void to_free_attribute(Attribute* attribute) {
     if(attribute == NULL)
         return;
 
     if(attribute->info.type == TAG_ATTRIBUTE) {
-
+        // Todo
     } else if(attribute->info.type == VALUE_ATTRIBUTE) {
-
+        // Todo
     } else if(attribute->info.type == EFFECT_ATTRIBUTE) {
-
+        // Todo
+    } else if(attribute->info.type == SET_ATTRIBUTE) {
+        // Todo
     }
 
     free(attribute);

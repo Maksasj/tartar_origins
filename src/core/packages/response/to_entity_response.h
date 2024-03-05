@@ -1,5 +1,5 @@
-#ifndef _TO_CORE_ENTITY_RESPONSE_PACKAGES_H_
-#define _TO_CORE_ENTITY_RESPONSE_PACKAGES_H_
+#ifndef _TO_CORE_ENTITY_RESPONSE_PACKAGE_H_
+#define _TO_CORE_ENTITY_RESPONSE_PACKAGE_H_
 
 #include "../to_res_package_info.h"
 #include "to_backend.h"

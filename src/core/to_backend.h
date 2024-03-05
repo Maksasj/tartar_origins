@@ -19,6 +19,4 @@
 #include <string.h>
 #include "tinycthread.h"
 
-#include "to_core.h"
-
 #endif

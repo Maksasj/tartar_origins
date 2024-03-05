@@ -2,16 +2,37 @@
 
 void _to_send_attribute(int socket, Attribute* attribute) {
     send(socket, attribute, sizeof(Attribute), 0);
+
+    if(attribute->info.type != SET_ATTRIBUTE)
+        return;
+
+    for(int i = 0; i < attribute->set.count; ++i) {
+        Attribute* at = attribute->set.attributes[i];
+
+        if(at != NULL)
+            _to_send_attribute(socket, at);
+    }
 }
 
 Attribute* _to_recv_attribute(int socket) {
     Attribute* attribute = malloc(sizeof(Attribute));
     recv(socket, attribute, sizeof(Attribute), 0);
+
+    if(attribute->info.type != SET_ATTRIBUTE)
+        return attribute;
+
+    for(int i = 0; i < attribute->set.count; ++i) {
+        Attribute* at = attribute->set.attributes[i];
+
+        if(at != NULL)
+            attribute->set.attributes[i] = _to_recv_attribute(socket);
+    }
+
     return attribute;
 }
 
 void _to_send_entity(int socket, Entity* entity) {
-    send(socket, entity, sizeof(Attribute), 0);
+    send(socket, entity, sizeof(Entity), 0);
 }
 
 Entity* _to_recv_entity(int socket) {

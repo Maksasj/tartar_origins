@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include "to_attribute.h"
+#include "attribute/to_attribute.h"
 
 typedef struct Entity {
     unsigned int attributeCount;
