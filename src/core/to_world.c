@@ -11,53 +11,16 @@ World* to_create_world() {
     return world;
 };
 
-Entity* to_world_summon_creature(World* world, Entity creature) {
-    for(int i = 0; i < 1024; ++i) {
-        if(world->creatures[i] == NULL) {
-            world->creatures[i] = malloc(sizeof(Entity));
-            *world->creatures[i] = creature;
-
-            return world->creatures[i];
-        }
-    }
-
-    return NULL;
-}
-
-/*
-Tile to_create_tile(TileType type) {
-    Tile tile;
-
-    tile.type = type;
-
-    return tile;
-}
-*/
-
-/*
-void to_chunk_fill_tiles(Chunk* chunk, Tile tile) {
-    for(unsigned int x = 0; x < 16; ++x) {
-        for(unsigned int y = 0; y < 16; ++y) {
-            chunk->tiles[x][y] = malloc(sizeof(Tile));
-            *chunk->tiles[x][y] = tile;
-        }
-    }
-}
-*/
-
 void todo_fill_chunk(Chunk* chunk) {
     for(unsigned int x = 0; x < 16; ++x) {
         for(unsigned int y = 0; y < 16; ++y) {
-            chunk->tiles[x][y] = to_create_entity(x, y);
+            chunk->tiles[x][y] = to_create_set_attribute("Self");
 
-            Attribute* a0 = to_create_tag_attribute("Ground");
-            to_entity_add_attribute(chunk->tiles[x][y], a0);
-
-            to_entity_stringify(chunk->tiles[x][y]);
+            chunk->tiles[x][y]->set.attributes[0] = to_create_tag_attribute("Ground");
+            chunk->tiles[x][y]->set.count = 1;
         }
     }
 }
-
 
 void to_world_create_chunk(World* world, long long xChunk, long long yChunk) {
     if(world->chunks == NULL) {

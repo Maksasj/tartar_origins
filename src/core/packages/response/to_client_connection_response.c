@@ -9,13 +9,11 @@ int to_recv_client_connection_response(int socket, TOClientConnectionResponse* r
     return 1;
 }
 
-void to_send_client_connection_response(int socket, Entity character) {
+void to_send_client_connection_response(int socket) {
     TOClientConnectionResponse response;
 
     response.info.type = TO_CLIENT_CONNECTION_RESPONSE_PACKAGE;
     response.info.success = 1;
-
-    response.character = character;
 
     send(socket, &response, sizeof(TOClientConnectionResponse), 0);
 }

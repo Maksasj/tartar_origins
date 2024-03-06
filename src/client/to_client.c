@@ -27,11 +27,6 @@ int to_client_connect(TOClient* client, const char* api, unsigned long port) {
     TOClientConnectionResponse response;
     to_recv_client_connection_response(client->socket, &response);
 
-    if(response.info.success) {
-        client->character = malloc(sizeof(Entity));
-        *client->character = response.character;
-    }
-
     return response.info.success;
 }
 

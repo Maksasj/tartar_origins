@@ -2,7 +2,7 @@
 #include "to_client_command.h"
 
 TOClientCommand commands[] = {
-    { "self", to_client_get_self_entity_callback },
+    { "self", to_client_get_self_callback },
     { "use",  to_client_use_callback }
 };
 unsigned int commandCount = sizeof(commands) / sizeof(TOClientCommand);

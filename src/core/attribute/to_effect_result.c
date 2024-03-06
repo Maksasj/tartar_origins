@@ -4,22 +4,22 @@ EffectResult* to_create_effect_result() {
     EffectResult* result = malloc(sizeof(EffectResult));
 
     result->count = 0;
-    result->entities = NULL;
+    result->attributes = NULL;
 
     return result;
 }
 
-void to_append_effect_result(EffectResult* result, struct Entity* entity) {
-    if(result->entities == NULL)
-        result->entities = malloc(sizeof(struct Entity*));
+void to_append_effect_result(EffectResult* result, union Attribute* attributes) {
+    if(result->attributes == NULL)
+        result->attributes = malloc(sizeof(union Attribute*));
     else
-        result->entities = realloc(result->entities, (result->count + 1) * sizeof(struct Entity*)); // Todo fix realloc
+        result->attributes = realloc(result->attributes, (result->count + 1) * sizeof(union Attribute*)); // Todo fix realloc
 
-    result->entities[result->count] = entity;
+    result->attributes[result->count] = attributes;
     ++result->count;
 }
 
 void to_free_effect_result(EffectResult* result) {
-    free(result->entities);
+    free(result->attributes);
     free(result);
 }

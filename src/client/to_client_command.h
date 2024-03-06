@@ -9,7 +9,7 @@ typedef struct TOClientCommand {
     TOClientCommandCallback* callback;
 } TOClientCommand;
 
-void to_client_get_self_entity_callback(TOClient* client, int argc, char* argv[]);
+void to_client_get_self_callback(TOClient* client, int argc, char* argv[]);
 void to_client_use_callback(TOClient* client, int argc, char* argv[]);
 
 /*

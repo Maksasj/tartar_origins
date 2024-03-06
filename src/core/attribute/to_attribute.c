@@ -83,6 +83,30 @@ Attribute* to_create_set_attribute(char* name) {
     return attribute;
 }
 
+void _to_stringify_attribute(Attribute* attribute, int depth) {
+    for(int i = 0; i < depth; ++i)
+        printf("    ");
+
+    AttributeType type = attribute->info.type;
+
+    if(type == TAG_ATTRIBUTE) {
+        printf("Tag: [%s]\n", attribute->info.name);
+    } else if(type == EFFECT_ATTRIBUTE) {
+        printf("Effect: [%s]\n", attribute->info.name);
+    } else if(type == VALUE_ATTRIBUTE) {
+        printf("Value: [%s]\n", attribute->info.name);
+    } else if(type == SET_ATTRIBUTE) {
+        printf("Set: [%s]\n", attribute->info.name);
+
+        for(int i = 0; i < attribute->set.count; ++i)
+            _to_stringify_attribute(attribute->set.attributes[i], depth + 1);
+    }
+}
+
+void to_attribute_stringify(Attribute* attribute) {
+    _to_stringify_attribute(attribute, 0);
+}
+
 void to_free_attribute(Attribute* attribute) {
     if(attribute == NULL)
         return;

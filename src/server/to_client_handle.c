@@ -22,14 +22,14 @@ void to_handle_use_request_packet(TOClientHandle* handle, void* buffer, unsigned
     if(request.argc <= 0)
         return;
 
-    Entity* domain = handle->connection->character;
-    unsigned int count = domain->attributeCount;
+    Attribute* domain = handle->connection->character;
+    unsigned int count = domain->set.count;
 
-    unsigned long long entityCount = 0;
-    Entity** entities = NULL;
+    unsigned long long attributeCount = 0;
+    Attribute** attributes = NULL;
 
     for(int i = 0; i < count; ++i) {
-        Attribute* attribute = domain->attributes[i];
+        Attribute* attribute = domain->set.attributes[i];
 
         if((attribute != NULL) && attribute->info.type == EFFECT_ATTRIBUTE) {
             EffectResult* result = attribute->effect.effect(attribute, domain, NULL, request.argc, request.argv);
@@ -37,27 +37,27 @@ void to_handle_use_request_packet(TOClientHandle* handle, void* buffer, unsigned
             if(result == NULL)
                 continue;
 
-            if(entities == NULL) {
-                entities = malloc(sizeof(Entity*) * result->count);
+            if(attributes == NULL) {
+                attributes = malloc(sizeof(Attribute*) * result->count);
             } else {
-                entities = realloc(entities, sizeof(Entity*) * (entityCount + result->count));
+                attributes = realloc(attributes, sizeof(Attribute*) * (attributeCount + result->count));
             }
 
-            memcpy(entities + entityCount * sizeof(Entity*), result->entities, result->count * sizeof(Entity*));
-            entityCount += result->count;
+            memcpy(attributes + attributeCount * sizeof(Attribute*), result->attributes, result->count * sizeof(Attribute*));
+            attributeCount += result->count;
 
             to_free_effect_result(result);
         }
     }
 
-    if(entityCount == 0) {
+    if(attributeCount == 0) {
         to_send_use_response(handle->connection->c_socket, EMPTY_RESPONSE);
     } else {
-        to_send_use_response(handle->connection->c_socket, ENTITY_RESPONSE);
-        to_send_entity_response(handle->connection->c_socket, entities, entityCount);
+        to_send_use_response(handle->connection->c_socket, ATTRIBUTE_RESPONSE);
+        to_send_attribute_response(handle->connection->c_socket, attributes, attributeCount);
     }
 
-    free(entities);
+    free(attributes);
 }
 
 int to_handle_client(void *ptr) {

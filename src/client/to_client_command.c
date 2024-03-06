@@ -11,7 +11,7 @@ void _to_send_use_request(TOClient* client, int argc, char* argv[]) {
     to_send_use_request(client->socket, argc, arguments);
 }
 
-void to_client_get_self_entity_callback(TOClient* client, int argc, char* argv[]) {
+void to_client_get_self_callback(TOClient* client, int argc, char* argv[]) {
     char *args[] = {"self"};
 
     _to_send_use_request(client, 1, args);
@@ -19,16 +19,16 @@ void to_client_get_self_entity_callback(TOClient* client, int argc, char* argv[]
     TOUseResponse useResponse;
     to_recv_use_response(client->socket, &useResponse);
 
-    if(useResponse.type == ENTITY_RESPONSE) {
-        TOEntityResponse eResponse;
-        to_recv_entity_response(client->socket, &eResponse);
+    if(useResponse.type == ATTRIBUTE_RESPONSE) {
+        TOAttributeResponse aResponse;
+        to_recv_attribute_response(client->socket, &aResponse);
 
-        for (int i = 0; i < eResponse.count; ++i) {
-            to_entity_stringify(eResponse.entity[i]);
-            to_free_entity(eResponse.entity[i]);
+        for (int i = 0; i < aResponse.count; ++i) {
+            to_attribute_stringify(aResponse.attributes[i]);
+            to_free_attribute(aResponse.attributes[i]);
         }
 
-        free(eResponse.entity);
+        free(aResponse.attributes);
     }
 }
 

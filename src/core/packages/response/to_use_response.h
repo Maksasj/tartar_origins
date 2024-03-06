@@ -6,7 +6,7 @@
 
 typedef enum TOUseResponseType {
     EMPTY_RESPONSE,
-    ENTITY_RESPONSE
+    ATTRIBUTE_RESPONSE
 } TOUseResponseType;
 
 typedef struct TOUseResponse {
