@@ -5,6 +5,7 @@
 
 typedef enum TOReqPackageType {
     TO_CLIENT_CONNECTION_REQUEST_PACKAGE,
+
     TO_USE_REQUEST_PACKAGE
 } TOReqPackageType;
 

@@ -118,7 +118,9 @@ void to_free_attribute(Attribute* attribute) {
     } else if(attribute->info.type == EFFECT_ATTRIBUTE) {
         // Todo
     } else if(attribute->info.type == SET_ATTRIBUTE) {
-        // Todo
+        for(int i = 0; i < 16; ++i)
+            if(attribute->set.attributes[i] != NULL)
+                to_free_attribute(attribute->set.attributes[i]);
     }
 
     free(attribute);

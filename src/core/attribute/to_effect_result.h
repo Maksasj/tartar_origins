@@ -10,7 +10,7 @@ typedef struct EffectResult {
     unsigned int count;
     union Attribute** attributes;
 } EffectResult;
-typedef EffectResult* (EffectCallback)(union Attribute* effect, union Attribute* domain, union Attribute* target, unsigned int argc, char argv[16][16]);
+typedef EffectResult* (EffectCallback)(union Attribute* effect, union Attribute* domain, union Attribute* target, void* buffer, unsigned long long length);
 
 EffectResult* to_create_effect_result();
 void to_append_effect_result(EffectResult* result, union Attribute* attributes);

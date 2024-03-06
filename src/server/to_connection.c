@@ -1,12 +1,13 @@
 #include "to_connection.h"
 
-EffectResult* movement_callback(Attribute* effect, Attribute* domain, Attribute* target, unsigned int argc, char argv[16][16]) {
-    printf("Used something\n");
-
+EffectResult* movement_callback(Attribute* effect, Attribute* domain, Attribute* target, void* buffer, unsigned long long length) {
     return NULL;
 }
 
-EffectResult* self_callback(Attribute* effect, Attribute* domain, Attribute* target, unsigned int argc, char argv[16][16]) {
+EffectResult* self_callback(Attribute* effect, Attribute* domain, Attribute* target, void* buffer, unsigned long long length) {
+    char argv[16][16];
+    memcpy(argv, buffer, sizeof(argv));
+
     if(strcmp(argv[0], "self") != 0)
         return NULL;
 
@@ -16,7 +17,6 @@ EffectResult* self_callback(Attribute* effect, Attribute* domain, Attribute* tar
 
     return result;
 }
-
 
 Connection* to_new_connection(int socket, struct sockaddr_in clientaddr) {
     Connection* connection = malloc(sizeof(Connection));

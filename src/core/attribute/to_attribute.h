@@ -46,7 +46,6 @@ Attribute* to_create_value_attribute(char* name, unsigned long long value);
 Attribute* to_create_effect_attribute(char* name, EffectCallback* effect);
 Attribute* to_create_set_attribute(char* name);
 
-void _to_stringify_attribute(Attribute* attribute, int depth);
 void to_attribute_stringify(Attribute* attribute);
 
 void to_free_attribute(Attribute* attribute);

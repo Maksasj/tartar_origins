@@ -6,9 +6,9 @@
 typedef struct TOUseRequest {
     TOReqPackageInfo info;
 
-    unsigned int argc;
-    char argv[16][16];
+    unsigned long long size;
+    void* buffer;
 } TOUseRequest;
-void to_send_use_request(int socket, unsigned int argc, char argv[16][16]);
+void to_send_use_request(int socket, void* buffer, unsigned long long size);
 
 #endif

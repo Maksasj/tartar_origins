@@ -8,7 +8,7 @@ void _to_send_use_request(TOClient* client, int argc, char* argv[]) {
     for(int i = 0; i < argc; ++i)
         strcpy(arguments[i], argv[i]);
 
-    to_send_use_request(client->socket, argc, arguments);
+    to_send_use_request(client->socket, arguments, sizeof(arguments));
 }
 
 void to_client_get_self_callback(TOClient* client, int argc, char* argv[]) {

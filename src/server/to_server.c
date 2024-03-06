@@ -42,7 +42,7 @@ void to_server_listen(TOServer* server) {
 }
 
 Connection* to_server_accept_connections(TOServer* server) {
-    struct sockaddr_in clientaddr; // Prisijungusio kliento adreso struktūra
+    struct sockaddr_in clientaddr;
     memset(&clientaddr,0, sizeof(clientaddr));
 
     socklen_t clientaddrlen = sizeof(struct sockaddr);

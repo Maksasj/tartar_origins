@@ -16,12 +16,6 @@ void to_handle_client_connection_request_packet(TOClientHandle* handle, void* bu
 }
 
 void to_handle_use_request_packet(TOClientHandle* handle, void* buffer, unsigned long long length) {
-    TOUseRequest request;
-    memcpy(&request, buffer, sizeof(TOUseRequest));
-
-    if(request.argc <= 0)
-        return;
-
     Attribute* domain = handle->connection->character;
     unsigned int count = domain->set.count;
 
@@ -31,23 +25,23 @@ void to_handle_use_request_packet(TOClientHandle* handle, void* buffer, unsigned
     for(int i = 0; i < count; ++i) {
         Attribute* attribute = domain->set.attributes[i];
 
-        if((attribute != NULL) && attribute->info.type == EFFECT_ATTRIBUTE) {
-            EffectResult* result = attribute->effect.effect(attribute, domain, NULL, request.argc, request.argv);
+        if((attribute == NULL) || attribute->info.type != EFFECT_ATTRIBUTE)
+            continue;
 
-            if(result == NULL)
-                continue;
+        EffectResult* result = attribute->effect.effect(attribute, domain, NULL, buffer, length);
 
-            if(attributes == NULL) {
-                attributes = malloc(sizeof(Attribute*) * result->count);
-            } else {
-                attributes = realloc(attributes, sizeof(Attribute*) * (attributeCount + result->count));
-            }
+        if(result == NULL)
+            continue;
 
-            memcpy(attributes + attributeCount * sizeof(Attribute*), result->attributes, result->count * sizeof(Attribute*));
-            attributeCount += result->count;
+        if(attributes == NULL)
+            attributes = malloc(sizeof(Attribute*) * result->count);
+        else
+            attributes = realloc(attributes, sizeof(Attribute*) * (attributeCount + result->count));
 
-            to_free_effect_result(result);
-        }
+        memcpy(attributes + attributeCount * sizeof(Attribute*), result->attributes, result->count * sizeof(Attribute*));
+        attributeCount += result->count;
+
+        to_free_effect_result(result);
     }
 
     if(attributeCount == 0) {
@@ -64,14 +58,15 @@ int to_handle_client(void *ptr) {
     TOClientHandle* handle = (TOClientHandle*) ptr;
     Connection* connection = handle->connection;
 
-    char buffer[1024];
-    memset(&buffer, 0, sizeof(buffer));
-
     TOClientHandlePacketCallback callbacks[] = {
         { TO_CLIENT_CONNECTION_REQUEST_PACKAGE, NULL },
+
         { TO_USE_REQUEST_PACKAGE,               to_handle_use_request_packet }
     };
     unsigned long long callbackCount = sizeof(callbacks) / sizeof(TOClientHandlePacketCallback);
+
+    char buffer[1024];
+    memset(&buffer, 0, sizeof(buffer));
 
     while(1) {
         int length = recv(connection->c_socket, buffer, sizeof(buffer), 0);
@@ -81,7 +76,7 @@ int to_handle_client(void *ptr) {
 
         for(unsigned int i = 0; i < callbackCount; ++i) {
             if(type == callbacks[i].type) {
-                callbacks[i].callback(handle, buffer, length);
+                callbacks[i].callback(handle, buffer + sizeof(TOUseRequest), length - sizeof(TOUseRequest));
                 break;
             }
         }
