@@ -1,27 +1,6 @@
 # Tartar Origins
 Very simple rpg game
 
-## Stats
-- Stamina
-- Strength
-- Intellect
-- Armor
-
-## EXP Level Up system
-- EXP
-- Level up
-
-## Classes
-- Warrior
-- Mage
-- 
-- Archer
-
-## Equipment
-- Plan basic equipment api
-
-## Monsters
-- Plan basic 
-
-## Locations
-- Plan basic locations api
+## License
+Tartart Origins is free, open source thing. All code in this repository FOR NOW is licensed under
+- MIT License ([LICENSE.md](https://github.com/Maksasj/tartar_origins/blob/master/LICENSE.md) or https://opensource.org/license/mit/)

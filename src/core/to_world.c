@@ -50,19 +50,3 @@ Chunk* to_world_get_chunk(World* world, long long xChunk, long long yChunk) {
 
     return NULL;
 }
-
-/*
-Tile* to_world_get_tile(World* world, long long xPos, long long yPos) {
-    long long xChunk = xPos >> 4;
-    long long yChunk = yPos >> 4;
-
-    Chunk* chunk = to_world_get_chunk(world, xChunk, yChunk);
-    if(chunk == NULL)
-        return to_create_tile(VOID_TILE);
-
-    unsigned long xRelative = xPos % 16;
-    unsigned long yRelative = yPos % 16;
-
-    return chunk->tiles[xRelative][yRelative];
-};
-*/
