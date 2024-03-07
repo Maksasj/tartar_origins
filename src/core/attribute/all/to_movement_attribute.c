@@ -1,6 +1,6 @@
 #include "to_movement_attribute.h"
 
-EffectResult* _to_movement_attribute_callback(Attribute* effect, Attribute* domain, Attribute* target, void* buffer, unsigned long long length) {
+EffectResult* _to_movement_attribute_callback(EffectContext* context, void* buffer, unsigned long long length) {
     return NULL;
 }
 

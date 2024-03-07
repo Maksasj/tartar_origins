@@ -1,6 +1,6 @@
 #include "to_self_attribute.h"
 
-EffectResult* _to_self_attribute_callback(Attribute* effect, Attribute* domain, Attribute* target, void* buffer, unsigned long long length)  {
+EffectResult* _to_self_attribute_callback(EffectContext* context, void* buffer, unsigned long long length)  {
     char argv[16][16];
     memcpy(argv, buffer, sizeof(argv));
 
@@ -9,7 +9,7 @@ EffectResult* _to_self_attribute_callback(Attribute* effect, Attribute* domain, 
 
     EffectResult* result = to_create_effect_result();
 
-    to_append_effect_result(result, domain);
+    to_append_effect_result(result, context->domain);
 
     return result;
 }

@@ -13,7 +13,14 @@ Connection* to_new_connection(int socket, struct sockaddr_in clientaddr) {
     connection->character->set.attributes[2] = to_create_vision_attribute();
     connection->character->set.attributes[3] = to_create_movement_attribute();
 
-    connection->character->set.count = 4;
+    Attribute* position = to_create_set_attribute("Position");
+    position->set.attributes[0] = to_create_value_attribute("xCoordinate", 0);
+    position->set.attributes[1] = to_create_value_attribute("yCoordinate", 0);
+    position->set.count = 2;
+
+    connection->character->set.attributes[4] = position;
+
+    connection->character->set.count = 5;
 
     return connection;
 }

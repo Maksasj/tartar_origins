@@ -16,8 +16,19 @@ void todo_fill_chunk(Chunk* chunk) {
         for(unsigned int y = 0; y < 16; ++y) {
             chunk->tiles[x][y] = to_create_set_attribute("Self");
 
-            chunk->tiles[x][y]->set.attributes[0] = to_create_tag_attribute("Ground");
-            chunk->tiles[x][y]->set.count = 1;
+            Attribute* material = to_create_set_attribute("Material");
+            material->set.attributes[0] = to_create_tag_attribute("Stone");
+            material->set.count = 1;
+
+            Attribute* position = to_create_set_attribute("Position");
+            position->set.attributes[0] = to_create_value_attribute("xCoordinate", chunk->xChunk * 16 + x);
+            position->set.attributes[1] = to_create_value_attribute("yCoordinate", chunk->yChunk * 16 + y);
+            position->set.count = 2;
+
+            chunk->tiles[x][y]->set.attributes[0] = material;
+            chunk->tiles[x][y]->set.attributes[1] = position;
+
+            chunk->tiles[x][y]->set.count = 2;
         }
     }
 }
@@ -49,4 +60,19 @@ Chunk* to_world_get_chunk(World* world, long long xChunk, long long yChunk) {
     }
 
     return NULL;
+}
+
+Attribute* to_world_get_tile(World* world, long long xPos, long long yPos) {
+    long long xChunk = xPos >> 4;
+    long long yChunk = yPos >> 4;
+
+    Chunk* chunk = to_world_get_chunk(world, xChunk, yChunk);
+
+    if(chunk == NULL)
+        return NULL;
+
+    unsigned long xRelative = xPos % 16;
+    unsigned long yRelative = yPos % 16;
+
+    return chunk->tiles[xRelative][yRelative];
 }

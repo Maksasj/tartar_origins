@@ -15,7 +15,7 @@ typedef struct Tag {
 typedef struct Value {
     AttributeInfo info;
 
-    unsigned long long value;
+    signed long long value;
 } Value;
 
 typedef struct Effect {
@@ -45,6 +45,8 @@ Attribute* to_create_tag_attribute(char* name);
 Attribute* to_create_value_attribute(char* name, unsigned long long value);
 Attribute* to_create_effect_attribute(char* name, EffectCallback* effect);
 Attribute* to_create_set_attribute(char* name);
+
+Attribute* to_set_find_attribute_name(Attribute* attribute, char* name);
 
 void to_attribute_stringify(Attribute* attribute);
 

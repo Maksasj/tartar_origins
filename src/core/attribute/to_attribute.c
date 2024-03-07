@@ -83,6 +83,26 @@ Attribute* to_create_set_attribute(char* name) {
     return attribute;
 }
 
+Attribute* to_set_find_attribute_name(Attribute* attribute, char* name) {
+    if(attribute == NULL)
+        return NULL;
+
+    if(attribute->info.type != SET_ATTRIBUTE)
+        return NULL;
+
+    for(int i = 0; i < attribute->set.count; ++i) {
+        Attribute* at = attribute->set.attributes[i];
+
+        if(at == NULL)
+            continue;
+
+        if(strcmp(at->info.name, name) == 0)
+            return at;
+    }
+
+    return NULL;
+}
+
 void _to_stringify_attribute(Attribute* attribute, int depth) {
     for(int i = 0; i < depth; ++i)
         printf("    ");
@@ -94,7 +114,7 @@ void _to_stringify_attribute(Attribute* attribute, int depth) {
     } else if(type == EFFECT_ATTRIBUTE) {
         printf("Effect: [%s]\n", attribute->info.name);
     } else if(type == VALUE_ATTRIBUTE) {
-        printf("Value: [%s]\n", attribute->info.name);
+        printf("Value: [%s] [%lld]\n", attribute->info.name, attribute->value.value);
     } else if(type == SET_ATTRIBUTE) {
         printf("Set: [%s]\n", attribute->info.name);
 

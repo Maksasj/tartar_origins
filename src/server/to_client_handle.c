@@ -28,7 +28,13 @@ void to_handle_use_request_packet(TOClientHandle* handle, void* buffer, unsigned
         if((attribute == NULL) || attribute->info.type != EFFECT_ATTRIBUTE)
             continue;
 
-        EffectResult* result = attribute->effect.effect(attribute, domain, NULL, buffer, length);
+        EffectContext context;
+        context.effect = attribute;
+        context.domain = domain;
+        context.target= NULL;
+        context.world = handle->server->world;
+
+        EffectResult* result = attribute->effect.effect(&context, buffer, length);
 
         if(result == NULL)
             continue;
@@ -60,7 +66,6 @@ int to_handle_client(void *ptr) {
 
     TOClientHandlePacketCallback callbacks[] = {
         { TO_CLIENT_CONNECTION_REQUEST_PACKAGE, NULL },
-
         { TO_USE_REQUEST_PACKAGE,               to_handle_use_request_packet }
     };
     unsigned long long callbackCount = sizeof(callbacks) / sizeof(TOClientHandlePacketCallback);
