@@ -130,3 +130,48 @@ void to_client_map_callback(TOClient* client, int argc, char* argv[]) {
     free(aResponse.attributes);
     to_free_attribute(self);
 }
+
+void to_client_go_callback(TOClient* client, int argc, char* argv[]) {
+    if(argc <= 1)
+        return;
+
+    Attribute* self = _to_get_self(client);
+    if(self == NULL)
+        return;
+
+    Attribute* position = to_set_find_attribute_name(self, "Position");
+    if(position == NULL)
+        return;
+
+    Attribute* xCoordinate = to_set_find_attribute_name(position, "xCoordinate");
+    Attribute* yCoordinate = to_set_find_attribute_name(position, "yCoordinate");
+    if(xCoordinate == NULL ||yCoordinate == NULL)
+        return;
+
+    long long xCord = xCoordinate->value.value;
+    long long yCord = yCoordinate->value.value;
+
+    to_free_attribute(self);
+
+    if(strcmp(argv[1], "up") == 0) {
+        yCord += 1;
+    } else if(strcmp(argv[1], "down") == 0) {
+        yCord -= 1;
+    } else if(strcmp(argv[1], "left") == 0) {
+        xCord -= 1;
+    } else if(strcmp(argv[1], "right") == 0) {
+        xCord += 1;
+    }
+
+    unsigned long long size = 3 + 2 * sizeof(long long);
+    char* buffer = malloc(size);
+    memcpy(buffer, "go", 3);
+
+    memcpy(buffer + 3, &xCord, sizeof(long long));
+    memcpy(buffer + 3 + sizeof(long long), &yCord, sizeof(long long));
+
+    to_send_use_request(client->socket, buffer, size);
+
+    TOUseResponse useResponse;
+    to_recv_use_response(client->socket, &useResponse);
+}
