@@ -20,13 +20,8 @@ void todo_fill_chunk(Chunk* chunk) {
             material->set.attributes[0] = to_create_tag_attribute("Stone");
             material->set.count = 1;
 
-            Attribute* position = to_create_set_attribute("Position");
-            position->set.attributes[0] = to_create_value_attribute("xCoordinate", chunk->xChunk * 16 + x);
-            position->set.attributes[1] = to_create_value_attribute("yCoordinate", chunk->yChunk * 16 + y);
-            position->set.count = 2;
-
             chunk->tiles[x][y]->set.attributes[0] = material;
-            chunk->tiles[x][y]->set.attributes[1] = position;
+            chunk->tiles[x][y]->set.attributes[1] = to_create_position_attribute(x + chunk->xChunk * 16, y + chunk->yChunk * 16);
 
             chunk->tiles[x][y]->set.count = 2;
         }

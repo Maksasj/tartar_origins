@@ -7,11 +7,8 @@ int _to_has_position(Attribute* attribute) {
         return 0;
 
     Attribute* xCoordinate = to_set_find_attribute_name(position, "xCoordinate");
-    if(xCoordinate == NULL)
-        return 0;
-
     Attribute* yCoordinate = to_set_find_attribute_name(position, "yCoordinate");
-    if(yCoordinate == NULL)
+    if(xCoordinate == NULL || yCoordinate == NULL)
         return 0;
 
     return 1;
@@ -35,7 +32,6 @@ EffectResult* _to_vision_attribute_callback(EffectContext* context, void* buffer
     signed long long yCord = yCoordinate->value.value;
 
     EffectResult* result = to_create_effect_result();
-    const int visionDistance = 8;
 
     // First lets add all creatures
     // Todo check this part
@@ -45,29 +41,30 @@ EffectResult* _to_vision_attribute_callback(EffectContext* context, void* buffer
         if(creature == NULL)
             continue;
 
-        if(_to_has_position(context->domain)) {
-            Attribute* positionCreature = to_set_find_attribute_name(creature, "Position");
-            Attribute* xCoordinateCreature = to_set_find_attribute_name(positionCreature, "xCoordinate");
-            Attribute* yCoordinateCreature = to_set_find_attribute_name(positionCreature, "yCoordinate");
+        if(!_to_has_position(context->domain))
+            continue;
 
-            signed long long xCordCreature = xCoordinateCreature->value.value;
-            signed long long yCordCreature = yCoordinateCreature->value.value;
+        Attribute* positionCreature = to_set_find_attribute_name(creature, "Position");
+        Attribute* xCoordinateCreature = to_set_find_attribute_name(positionCreature, "xCoordinate");
+        Attribute* yCoordinateCreature = to_set_find_attribute_name(positionCreature, "yCoordinate");
 
-            signed long long xDelta = abs(xCord - xCordCreature);
-            signed long long yDelta = abs(yCord - yCordCreature);
+        long long xCordCreature = xCoordinateCreature->value.value;
+        long long yCordCreature = yCoordinateCreature->value.value;
 
-            if(xDelta > visionDistance)
-                continue;
+        long long xDelta = abs(xCord - xCordCreature);
+        long long yDelta = abs(yCord - yCordCreature);
 
-            if(yDelta > visionDistance)
-                continue;
+        if(xDelta > VISION_DISTANCE)
+            continue;
 
-            to_append_effect_result(result, creature);
-        }
+        if(yDelta > VISION_DISTANCE)
+            continue;
+
+        to_append_effect_result(result, creature);
     }
 
-    for(int x = -visionDistance; x < visionDistance; ++x) {
-        for(int y = -visionDistance; y < visionDistance; ++y) {
+    for(int x = -VISION_DISTANCE; x < VISION_DISTANCE; ++x) {
+        for(int y = -VISION_DISTANCE; y < VISION_DISTANCE; ++y) {
             signed long long tileXCord = xCord + x;
             signed long long tileYCord = yCord + y;
 

@@ -8,28 +8,20 @@ EffectResult* _to_movement_attribute_callback(EffectContext* context, void* buff
     long long newXCord = *(long long*)(buffer + 3);
     long long newYCord = *(long long*)(buffer + 3 + sizeof(long long));
 
-    Attribute* position = to_set_find_attribute_name(context->domain, "Position");
-    if(position == NULL)
+    long long xCord;
+    long long yCord;
+    if(!_to_get_position(context->domain, &xCord, &yCord))
         return NULL;
 
-    Attribute* xCoordinate = to_set_find_attribute_name(position, "xCoordinate");
-    Attribute* yCoordinate = to_set_find_attribute_name(position, "yCoordinate");
-    if(xCoordinate == NULL || yCoordinate == NULL)
+    long long xDelta = abs(xCord - newXCord);
+    long long yDelta = abs(yCord - newYCord);
+
+    if((xDelta > WALK_DISTANCE) || yDelta > WALK_DISTANCE)
         return NULL;
 
-    long long xCord = xCoordinate->value.value;
-    long long yCord = yCoordinate->value.value;
+    _to_set_position(context->domain, newXCord, newYCord);
 
-    signed long long xDelta = abs(xCord - newXCord);
-    signed long long yDelta = abs(yCord - newYCord);
-
-    const signed long long walkDistance = 1;
-
-    if((xDelta > walkDistance) || yDelta > walkDistance)
-        return NULL;
-
-    xCoordinate->value.value = newXCord;
-    yCoordinate->value.value = newYCord;
+    printf("Poggers !\n");
 
     return NULL;
 }

@@ -153,15 +153,14 @@ void to_client_go_callback(TOClient* client, int argc, char* argv[]) {
 
     to_free_attribute(self);
 
-    if(strcmp(argv[1], "up") == 0) {
+    if(strcmp(argv[1], "up") == 0)
         yCord += 1;
-    } else if(strcmp(argv[1], "down") == 0) {
+    else if(strcmp(argv[1], "down") == 0)
         yCord -= 1;
-    } else if(strcmp(argv[1], "left") == 0) {
+    else if(strcmp(argv[1], "left") == 0)
         xCord -= 1;
-    } else if(strcmp(argv[1], "right") == 0) {
+    else if(strcmp(argv[1], "right") == 0)
         xCord += 1;
-    }
 
     unsigned long long size = 3 + 2 * sizeof(long long);
     char* buffer = malloc(size);

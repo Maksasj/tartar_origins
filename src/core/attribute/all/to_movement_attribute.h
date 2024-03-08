@@ -3,6 +3,8 @@
 
 #include "../to_attribute.h"
 
+#define WALK_DISTANCE 1
+
 EffectResult* _to_movement_attribute_callback(EffectContext* context, void* buffer, unsigned long long length);
 Attribute* to_create_movement_attribute();
 

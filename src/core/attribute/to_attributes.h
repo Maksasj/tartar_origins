@@ -9,5 +9,6 @@
 #include "all/to_self_attribute.h"
 #include "all/to_vision_attribute.h"
 #include "all/to_movement_attribute.h"
+#include "all/to_position_attribute.h"
 
 #endif
