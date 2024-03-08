@@ -11,7 +11,7 @@ void to_send_use_request(int socket, void* buffer, unsigned long long size) {
     memcpy(response, &request, sizeof(TOUseRequest));
     memcpy(response + sizeof(TOUseRequest), buffer, size);
 
-    send(socket, response, sizeof(TOUseRequest) + size, 0);
+    send(socket, (void*) response, sizeof(TOUseRequest) + size, 0);
 
     free(response);
 }

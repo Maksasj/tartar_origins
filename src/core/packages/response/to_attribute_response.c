@@ -1,7 +1,7 @@
 #include "to_attribute_response.h"
 
 void _to_send_attribute(int socket, Attribute* attribute) {
-    send(socket, attribute, sizeof(Attribute), 0);
+    send(socket, (void*) attribute, sizeof(Attribute), 0);
 
     if(attribute->info.type != SET_ATTRIBUTE)
         return;
@@ -16,7 +16,7 @@ void _to_send_attribute(int socket, Attribute* attribute) {
 
 Attribute* _to_recv_attribute(int socket) {
     Attribute* attribute = malloc(sizeof(Attribute));
-    recv(socket, attribute, sizeof(Attribute), 0);
+    recv(socket, (void*) attribute, sizeof(Attribute), 0);
 
     if(attribute->info.type != SET_ATTRIBUTE)
         return attribute;
@@ -32,7 +32,7 @@ Attribute* _to_recv_attribute(int socket) {
 }
 
 int to_recv_attribute_response(int socket, TOAttributeResponse* response) {
-    recv(socket, response, sizeof(TOAttributeResponse), 0);
+    recv(socket, (void*) response, sizeof(TOAttributeResponse), 0);
 
     if(response->count <= 0)
         return -1;
@@ -53,7 +53,7 @@ void to_send_attribute_response(int socket, Attribute* attributes[], unsigned in
 
     response.count = count;
 
-    send(socket, &response, sizeof(TOAttributeResponse), 0);
+    send(socket, (void*) &response, sizeof(TOAttributeResponse), 0);
 
     for(int e = 0; e < count; ++e)
         _to_send_attribute(socket, attributes[e]);

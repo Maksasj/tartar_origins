@@ -71,26 +71,21 @@ void to_client_map_callback(TOClient* client, int argc, char* argv[]) {
     if(self == NULL)
         return;
 
-    Attribute* position = to_set_find_attribute_name(self, "Position");
-    if(position == NULL)
+    long long xCord;
+    long long yCord;
+    if(!_to_get_position(self, &xCord, &yCord))
         return;
 
-    Attribute* xCoordinate = to_set_find_attribute_name(position, "xCoordinate");
-    Attribute* yCoordinate = to_set_find_attribute_name(position, "yCoordinate");
-    if(xCoordinate == NULL ||yCoordinate == NULL)
-        return;
+    to_free_attribute(self);
 
     char *args[] = {"vision"};
-
     _to_send_use_request(client, 1, args);
 
     TOUseResponse useResponse;
     to_recv_use_response(client->socket, &useResponse);
 
-    if(useResponse.type != ATTRIBUTE_RESPONSE) {
-        to_free_attribute(self);
+    if(useResponse.type != ATTRIBUTE_RESPONSE)
         return;
-    }
 
     TOAttributeResponse aResponse;
     to_recv_attribute_response(client->socket, &aResponse);
@@ -99,26 +94,25 @@ void to_client_map_callback(TOClient* client, int argc, char* argv[]) {
     memset(map, '*', sizeof(map));
 
     for(int i = 0; i < aResponse.count; ++i) {
-        Attribute* attribute = aResponse.attributes[i];
-        if(attribute == NULL)
+        Attribute* entity = aResponse.attributes[i];
+
+        if(entity == NULL)
             continue;
 
-        Attribute* thingPosition = to_set_find_attribute_name(attribute, "Position");
-        if(thingPosition == NULL)
+        long long thingXCord;
+        long long thingYCord;
+        if(!_to_get_position(entity, &thingXCord, &thingYCord)) {
+            to_free_attribute(entity);
             continue;
+        }
 
-        Attribute* thingXCoordinate = to_set_find_attribute_name(thingPosition, "xCoordinate");
-        Attribute* thingYCoordinate = to_set_find_attribute_name(thingPosition, "yCoordinate");
-        if(thingXCoordinate == NULL || thingYCoordinate == NULL)
-            continue;
+        to_free_attribute(entity);
 
-        long long xPos = (thingXCoordinate->value.value - xCoordinate->value.value) + 7;
-        long long yPos = (thingYCoordinate->value.value - yCoordinate->value.value) + 7;
+        long long xDelta = (thingXCord - xCord) + 7;
+        long long yDelta = (thingYCord - yCord) + 7;
 
-        if((xPos >= 0 && xPos <= 14) && (yPos >= 0 && yPos <= 14))
-            map[14 - yPos][xPos] = '.';
-
-        to_free_attribute(attribute);
+        if((xDelta >= 0 && xDelta <= 14) && (yDelta >= 0 && yDelta <= 14))
+            map[14 - yDelta][xDelta] = '.';
     }
 
     map[7][7] = 'P';
@@ -128,7 +122,6 @@ void to_client_map_callback(TOClient* client, int argc, char* argv[]) {
         printf("%.15s\n", map[y]);
 
     free(aResponse.attributes);
-    to_free_attribute(self);
 }
 
 void to_client_go_callback(TOClient* client, int argc, char* argv[]) {
@@ -139,17 +132,12 @@ void to_client_go_callback(TOClient* client, int argc, char* argv[]) {
     if(self == NULL)
         return;
 
-    Attribute* position = to_set_find_attribute_name(self, "Position");
-    if(position == NULL)
+    long long xCord;
+    long long yCord;
+    if(!_to_get_position(self, &xCord, &yCord)) {
+        to_free_attribute(self);
         return;
-
-    Attribute* xCoordinate = to_set_find_attribute_name(position, "xCoordinate");
-    Attribute* yCoordinate = to_set_find_attribute_name(position, "yCoordinate");
-    if(xCoordinate == NULL ||yCoordinate == NULL)
-        return;
-
-    long long xCord = xCoordinate->value.value;
-    long long yCord = yCoordinate->value.value;
+    }
 
     to_free_attribute(self);
 

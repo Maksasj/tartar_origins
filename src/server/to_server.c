@@ -55,7 +55,7 @@ Connection* to_server_accept_connections(TOServer* server) {
     }
 
     TOClientConnectionRequest request;
-    recv(socket, &request, sizeof(TOClientConnectionRequest), 0);
+    recv(socket, (void*) &request, sizeof(TOClientConnectionRequest), 0);
 
     if(request.info.type != TO_CLIENT_CONNECTION_REQUEST_PACKAGE) {
         printf("First package is not a client connection package\n");

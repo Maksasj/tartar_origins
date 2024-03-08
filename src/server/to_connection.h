@@ -9,7 +9,7 @@ typedef struct Connection {
     thrd_t thread;
 
     // Networking
-    int c_socket;
+    int socket;
     struct sockaddr_in clientaddr;
 
     // Gameplay

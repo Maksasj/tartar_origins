@@ -51,10 +51,10 @@ void to_handle_use_request_packet(TOClientHandle* handle, void* buffer, unsigned
     }
 
     if(attributeCount == 0) {
-        to_send_use_response(handle->connection->c_socket, EMPTY_RESPONSE);
+        to_send_use_response(handle->connection->socket, EMPTY_RESPONSE);
     } else {
-        to_send_use_response(handle->connection->c_socket, ATTRIBUTE_RESPONSE);
-        to_send_attribute_response(handle->connection->c_socket, attributes, attributeCount);
+        to_send_use_response(handle->connection->socket, ATTRIBUTE_RESPONSE);
+        to_send_attribute_response(handle->connection->socket, attributes, attributeCount);
     }
 
     free(attributes);
@@ -74,7 +74,7 @@ int to_handle_client(void *ptr) {
     memset(&buffer, 0, sizeof(buffer));
 
     while(1) {
-        int length = recv(connection->c_socket, buffer, sizeof(buffer), 0);
+        int length = recv(connection->socket, buffer, sizeof(buffer), 0);
 
         TOReqPackageType type;
         memcpy(&type, buffer, sizeof(TOReqPackageType));
@@ -87,7 +87,7 @@ int to_handle_client(void *ptr) {
         }
     }
 
-    close(connection->c_socket);
+    close(connection->socket);
 
     return 0;
 }

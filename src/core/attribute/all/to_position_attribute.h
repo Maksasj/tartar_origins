@@ -7,4 +7,7 @@
 
 Attribute* to_create_position_attribute(long long xCord, long long yCord);
 
+int _to_get_position(Attribute* domain, long long* xCord, long long* yCord);
+int _to_set_position(Attribute* domain, long long xCord, long long yCord);
+
 #endif

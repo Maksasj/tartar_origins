@@ -3,6 +3,8 @@
 
 #include "../to_attribute.h"
 
+#include "to_position_attribute.h"
+
 #define VISION_DISTANCE 8
 
 EffectResult* _to_vision_attribute_callback(EffectContext* context, void* buffer, unsigned long long length);

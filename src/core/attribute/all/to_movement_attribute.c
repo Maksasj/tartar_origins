@@ -21,8 +21,6 @@ EffectResult* _to_movement_attribute_callback(EffectContext* context, void* buff
 
     _to_set_position(context->domain, newXCord, newYCord);
 
-    printf("Poggers !\n");
-
     return NULL;
 }
 
