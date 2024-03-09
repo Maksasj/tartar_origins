@@ -25,7 +25,10 @@ int to_client_connect(TOClient* client, const char* api, unsigned long port) {
     to_send_client_connection_request(client->socket);
 
     TOClientConnectionResponse response;
-    to_recv_client_connection_response(client->socket, &response);
+    int result = to_recv_client_connection_response(client->socket, &response);
+
+    if(result == -1)
+        return -1;
 
     return response.info.success;
 }

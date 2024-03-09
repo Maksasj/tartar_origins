@@ -5,9 +5,6 @@
 #include "to_backend.h"
 
 typedef struct Connection {
-    // Threads
-    thrd_t thread;
-
     // Networking
     int socket;
     struct sockaddr_in clientaddr;
@@ -17,5 +14,6 @@ typedef struct Connection {
 } Connection;
 
 Connection* to_new_connection(int socket, struct sockaddr_in clientaddr);
+void to_free_connection(Connection* connection);
 
 #endif

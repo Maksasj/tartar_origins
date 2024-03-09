@@ -13,6 +13,6 @@ typedef struct TOAttributeResponse {
 } TOAttributeResponse;
 
 int to_recv_attribute_response(int socket, TOAttributeResponse* response);
-void to_send_attribute_response(int socket, Attribute* attributes[], unsigned int count);
+int to_send_attribute_response(int socket, Attribute* attributes[], unsigned int count);
 
 #endif

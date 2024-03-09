@@ -9,6 +9,6 @@ typedef struct TOClientConnectionResponse {
 } TOClientConnectionResponse;
 
 int to_recv_client_connection_response(int socket, TOClientConnectionResponse* response);
-void to_send_client_connection_response(int socket);
+int to_send_client_connection_response(int socket);
 
 #endif

@@ -16,6 +16,6 @@ typedef struct TOUseResponse {
 } TOUseResponse;
 
 int to_recv_use_response(int socket, TOUseResponse* response);
-void to_send_use_response(int socket, TOUseResponseType type);
+int to_send_use_response(int socket, TOUseResponseType type);
 
 #endif

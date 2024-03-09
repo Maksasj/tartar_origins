@@ -18,3 +18,13 @@ Connection* to_new_connection(int socket, struct sockaddr_in clientaddr) {
 
     return connection;
 }
+
+void to_free_connection(Connection* connection) {
+    if(connection == NULL)
+        return;
+
+    if(connection->character != NULL)
+        to_free_attribute(connection->character);
+
+    free(connection);
+}

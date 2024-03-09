@@ -2,6 +2,7 @@
 #define _TO_SERVER_BACKEND_H_
 
 #ifdef _WIN32
+    // #include <winsock.h>
     #include <WinSock2.h>
     #define socklen_t int
     #include <io.h>
@@ -17,6 +18,5 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "tinycthread.h"
 
 #endif

@@ -1,17 +1,26 @@
 #include "to_attribute_response.h"
 
-void _to_send_attribute(int socket, Attribute* attribute) {
-    send(socket, (void*) attribute, sizeof(Attribute), 0);
+int _to_send_attribute(int socket, Attribute* attribute) {
+    int length = send(socket, (void*) attribute, sizeof(Attribute), 0);
+
+    if(length == -1)
+        return -1;
 
     if(attribute->info.type != SET_ATTRIBUTE)
-        return;
+        return 1;
 
     for(int i = 0; i < attribute->set.count; ++i) {
         Attribute* at = attribute->set.attributes[i];
 
-        if(at != NULL)
-            _to_send_attribute(socket, at);
+        if(at != NULL) {
+            length = _to_send_attribute(socket, at);
+
+            if(length == -1)
+                return -1;
+        }
     }
+
+    return 1;
 }
 
 Attribute* _to_recv_attribute(int socket) {
@@ -32,7 +41,10 @@ Attribute* _to_recv_attribute(int socket) {
 }
 
 int to_recv_attribute_response(int socket, TOAttributeResponse* response) {
-    recv(socket, (void*) response, sizeof(TOAttributeResponse), 0);
+    int length = recv(socket, (void*) response, sizeof(TOAttributeResponse), 0);
+
+    if(length <= 0)
+        return -1;
 
     if(response->count <= 0)
         return -1;
@@ -45,7 +57,7 @@ int to_recv_attribute_response(int socket, TOAttributeResponse* response) {
     return 1;
 }
 
-void to_send_attribute_response(int socket, Attribute* attributes[], unsigned int count) {
+int to_send_attribute_response(int socket, Attribute* attributes[], unsigned int count) {
     TOAttributeResponse response;
 
     response.info.type = TO_ATTRIBUTE_RESPONSE_PACKAGE;
@@ -53,8 +65,17 @@ void to_send_attribute_response(int socket, Attribute* attributes[], unsigned in
 
     response.count = count;
 
-    send(socket, (void*) &response, sizeof(TOAttributeResponse), 0);
+    int length = send(socket, (void*) &response, sizeof(TOAttributeResponse), 0);
 
-    for(int e = 0; e < count; ++e)
-        _to_send_attribute(socket, attributes[e]);
+    if(length == -1)
+        return -1;
+
+    for(int e = 0; e < count; ++e) {
+        length = _to_send_attribute(socket, attributes[e]);
+
+        if(length == -1)
+            return -1;
+    }
+
+    return 1;
 }

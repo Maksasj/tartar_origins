@@ -1,5 +1,7 @@
 #include "to_attribute.h"
 
+#include <stdio.h>
+
 Attribute* to_create_tag_attribute(const char* name) {
     if(name == NULL)
         return NULL;
