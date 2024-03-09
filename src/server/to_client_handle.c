@@ -17,12 +17,11 @@ void to_handle_client_connection_request_packet(TOClientHandle* handle, void* bu
 
 void to_handle_use_request_packet(TOClientHandle* handle, void* buffer, unsigned long long length) {
     Attribute* domain = handle->connection->character;
-    unsigned int count = domain->set.count;
 
     unsigned long long attributeCount = 0;
     Attribute** attributes = NULL;
 
-    for(int i = 0; i < count; ++i) {
+    for(int i = 0; i < domain->set.count; ++i) {
         Attribute* attribute = domain->set.attributes[i];
 
         if((attribute == NULL) || attribute->info.type != EFFECT_ATTRIBUTE)

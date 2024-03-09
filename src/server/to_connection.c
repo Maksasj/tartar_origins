@@ -6,7 +6,7 @@ Connection* to_new_connection(int socket, struct sockaddr_in clientaddr) {
     connection->socket = socket;
     memcpy(&connection->clientaddr, &clientaddr, sizeof(clientaddr));
 
-    Attribute* self = to_create_set_attribute("Self"); 
+    Attribute* self = to_create_set_attribute("Player");
 
     to_set_append_attribute(self, to_create_self_attribute());
     to_set_append_attribute(self, to_create_vision_attribute());

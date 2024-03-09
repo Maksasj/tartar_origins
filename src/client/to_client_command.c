@@ -106,8 +106,6 @@ void to_client_map_callback(TOClient* client, int argc, char* argv[]) {
             continue;
         }
 
-        to_free_attribute(entity);
-
         long long xDelta = (thingXCord - xCord) + 7;
         long long yDelta = (thingYCord - yCord) + 7;
 
@@ -125,6 +123,8 @@ void to_client_map_callback(TOClient* client, int argc, char* argv[]) {
 
             map[14 - yDelta][xDelta] = character;
         }
+
+        to_free_attribute(entity);
     }
 
     map[7][7] = 'P';
