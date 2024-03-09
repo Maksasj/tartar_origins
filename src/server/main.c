@@ -54,27 +54,21 @@ int main() {
             if(!FD_ISSET(socket, &readSet))
                 continue;
 
-            int result = to_handle_client(server, con);
-
-            printf("result: '%d'\n", result);
-
-            if(result == 0) {
-                TO_LOG(TO_INFO, "Closing connection with '%s'", inet_ntoa(con->clientaddr.sin_addr));
-                close(con->socket);
-
-                to_free_connection(con);
-                server->connections[i] = NULL;
+            if(to_handle_client(server, con) > 0)
                 continue;
-            }
 
-            if(result < 0) {
-                TO_LOG(TO_INFO, "Receive error from '%s'", inet_ntoa(con->clientaddr.sin_addr));
-                close(con->socket);
+            TO_LOG(TO_INFO, "Closing connection with '%s'", inet_ntoa(con->clientaddr.sin_addr));
 
-                to_free_connection(con);
-                server->connections[i] = NULL;
-                continue;
-            }
+            #ifdef _WIN32
+                shutdown(con->socket, SD_BOTH);
+                if(closesocket(socket) == SOCKET_ERROR)
+                    TO_LOG(TO_ERROR, "Failed to close socket");
+            #else
+                close(socket);
+            #endif
+
+            to_free_connection(con);
+            server->connections[i] = NULL;
         }
     }
 
