@@ -3,9 +3,8 @@
 Attribute* to_create_position_attribute(long long xCord, long long yCord) {
     Attribute* position = to_create_set_attribute("Position");
 
-    position->set.attributes[0] = to_create_value_attribute("xCoordinate", xCord);
-    position->set.attributes[1] = to_create_value_attribute("yCoordinate", yCord);
-    position->set.count = 2;
+    to_set_append_attribute(position, to_create_value_attribute("xCoordinate", xCord));
+    to_set_append_attribute(position, to_create_value_attribute("yCoordinate", yCord));
 
     return position;
 }

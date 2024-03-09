@@ -10,5 +10,7 @@
 #include "all/to_vision_attribute.h"
 #include "all/to_movement_attribute.h"
 #include "all/to_position_attribute.h"
+#include "all/to_material_attribute.h"
+#include "all/to_godly_hand.h"
 
 #endif

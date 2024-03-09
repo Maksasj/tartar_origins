@@ -41,12 +41,14 @@ typedef union Attribute {
     AttributeSet set;
 } Attribute;
 
-Attribute* to_create_tag_attribute(char* name);
-Attribute* to_create_value_attribute(char* name, unsigned long long value);
-Attribute* to_create_effect_attribute(char* name, EffectCallback* effect);
-Attribute* to_create_set_attribute(char* name);
+Attribute* to_create_tag_attribute(const char* name);
+Attribute* to_create_value_attribute(const char* name, unsigned long long value);
+Attribute* to_create_effect_attribute(const char* name, EffectCallback* effect);
+Attribute* to_create_set_attribute(const char* name);
 
-Attribute* to_set_find_attribute_name(Attribute* attribute, char* name);
+// Returns 'attribute' if success, NULL if not
+Attribute* to_set_append_attribute(Attribute* set, Attribute* attribute);
+Attribute* to_set_find_attribute_name(Attribute* attribute, const char* name);
 
 void to_attribute_stringify(Attribute* attribute);
 

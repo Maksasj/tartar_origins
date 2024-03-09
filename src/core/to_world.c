@@ -14,16 +14,15 @@ World* to_create_world() {
 void todo_fill_chunk(Chunk* chunk) {
     for(unsigned int x = 0; x < 16; ++x) {
         for(unsigned int y = 0; y < 16; ++y) {
-            chunk->tiles[x][y] = to_create_set_attribute("Self");
+            Attribute* tile = to_create_set_attribute("Self");
 
-            Attribute* material = to_create_set_attribute("Material");
-            material->set.attributes[0] = to_create_tag_attribute("Stone");
-            material->set.count = 1;
+            Attribute* material = to_create_material_attribute("Grass");
+            to_set_append_attribute(tile, material);
 
-            chunk->tiles[x][y]->set.attributes[0] = material;
-            chunk->tiles[x][y]->set.attributes[1] = to_create_position_attribute(x + chunk->xChunk * 16, y + chunk->yChunk * 16);
+            Attribute* position = to_create_position_attribute(x + chunk->xChunk * 16, y + chunk->yChunk * 16);
+            to_set_append_attribute(tile, position);
 
-            chunk->tiles[x][y]->set.count = 2;
+            chunk->tiles[x][y] = tile;
         }
     }
 }
@@ -70,4 +69,32 @@ Attribute* to_world_get_tile(World* world, long long xPos, long long yPos) {
     unsigned long yRelative = yPos % 16;
 
     return chunk->tiles[xRelative][yRelative];
+}
+
+int to_world_set_tile(World* world, long long xPos, long long yPos, char* material) {
+    long long xChunk = xPos >> 4;
+    long long yChunk = yPos >> 4;
+
+    Chunk* chunk = to_world_get_chunk(world, xChunk, yChunk);
+
+    if(chunk == NULL)
+        return 0;
+
+    unsigned long xRelative = xPos % 16;
+    unsigned long yRelative = yPos % 16;
+
+    if(chunk->tiles[xRelative][yRelative] == NULL)
+        free(chunk->tiles[xRelative][yRelative]);
+
+    Attribute* tile = to_create_set_attribute("Self");
+
+    Attribute* mat = to_create_material_attribute(material);
+    to_set_append_attribute(tile, mat);
+
+    Attribute* position = to_create_position_attribute(xPos, yPos);
+    to_set_append_attribute(tile, position);
+
+    chunk->tiles[xRelative][yRelative] = tile;
+
+    return 1;
 }

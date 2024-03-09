@@ -5,7 +5,8 @@ TOClientCommand commands[] = {
     { "self", to_client_get_self_callback },
     { "use",  to_client_use_callback },
     { "map",  to_client_map_callback },
-    { "go",   to_client_go_callback }
+    { "go",   to_client_go_callback },
+    { "ghand",to_client_ghand_callback }
 };
 unsigned int commandCount = sizeof(commands) / sizeof(TOClientCommand);
 

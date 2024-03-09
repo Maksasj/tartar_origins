@@ -111,8 +111,20 @@ void to_client_map_callback(TOClient* client, int argc, char* argv[]) {
         long long xDelta = (thingXCord - xCord) + 7;
         long long yDelta = (thingYCord - yCord) + 7;
 
-        if((xDelta >= 0 && xDelta <= 14) && (yDelta >= 0 && yDelta <= 14))
-            map[14 - yDelta][xDelta] = '.';
+        if((xDelta >= 0 && xDelta <= 14) && (yDelta >= 0 && yDelta <= 14)) {
+            char character = '?';
+
+            if(_to_has_material(entity, "Stone"))
+                character = '#';
+
+            if(_to_has_material(entity, "Grass"))
+                character = ',';
+
+            if(character == '?')
+                to_attribute_stringify(entity);
+
+            map[14 - yDelta][xDelta] = character;
+        }
     }
 
     map[7][7] = 'P';
@@ -156,6 +168,46 @@ void to_client_go_callback(TOClient* client, int argc, char* argv[]) {
 
     memcpy(buffer + 3, &xCord, sizeof(long long));
     memcpy(buffer + 3 + sizeof(long long), &yCord, sizeof(long long));
+
+    to_send_use_request(client->socket, buffer, size);
+
+    TOUseResponse useResponse;
+    to_recv_use_response(client->socket, &useResponse);
+}
+
+void to_client_ghand_callback(TOClient* client, int argc, char* argv[]) {
+    if(argc <= 2)
+        return;
+
+    Attribute* self = _to_get_self(client);
+    if(self == NULL)
+        return;
+
+    long long xCord;
+    long long yCord;
+    if(!_to_get_position(self, &xCord, &yCord)) {
+        to_free_attribute(self);
+        return;
+    }
+
+    to_free_attribute(self);
+
+    if(strcmp(argv[1], "up") == 0)
+        yCord += 1;
+    else if(strcmp(argv[1], "down") == 0)
+        yCord -= 1;
+    else if(strcmp(argv[1], "left") == 0)
+        xCord -= 1;
+    else if(strcmp(argv[1], "right") == 0)
+        xCord += 1;
+
+    unsigned long long size = 6 + 16 + 2 * sizeof(long long);
+    char* buffer = malloc(size);
+    memcpy(buffer, "ghand", 6);
+    memcpy(buffer + 6, argv[2], 16);
+
+    memcpy(buffer + 16 + 6, &xCord, sizeof(long long));
+    memcpy(buffer + 16 + 6 + sizeof(long long), &yCord, sizeof(long long));
 
     to_send_use_request(client->socket, buffer, size);
 

@@ -1,6 +1,6 @@
 #include "to_attribute.h"
 
-Attribute* to_create_tag_attribute(char* name) {
+Attribute* to_create_tag_attribute(const char* name) {
     if(name == NULL)
         return NULL;
 
@@ -19,7 +19,7 @@ Attribute* to_create_tag_attribute(char* name) {
     return attribute;
 }
 
-Attribute* to_create_value_attribute(char* name, unsigned long long value) {
+Attribute* to_create_value_attribute(const char* name, unsigned long long value) {
     if(name == NULL)
         return NULL;
 
@@ -40,7 +40,7 @@ Attribute* to_create_value_attribute(char* name, unsigned long long value) {
     return attribute;
 }
 
-Attribute* to_create_effect_attribute(char* name, EffectCallback* effect) {
+Attribute* to_create_effect_attribute(const char* name, EffectCallback* effect) {
     if(name == NULL)
         return NULL;
 
@@ -61,7 +61,7 @@ Attribute* to_create_effect_attribute(char* name, EffectCallback* effect) {
     return attribute;
 }
 
-Attribute* to_create_set_attribute(char* name) {
+Attribute* to_create_set_attribute(const char* name) {
     if(name == NULL)
         return NULL;
 
@@ -83,7 +83,26 @@ Attribute* to_create_set_attribute(char* name) {
     return attribute;
 }
 
-Attribute* to_set_find_attribute_name(Attribute* attribute, char* name) {
+Attribute* to_set_append_attribute(Attribute* set, Attribute* attribute) {
+    if(set->set.count >= 16)
+        return NULL;
+
+    for(int i = 0; i < 16; ++i) {
+        Attribute* at = set->set.attributes[i];
+
+        if(at != NULL)
+            continue;
+
+        set->set.attributes[i] = attribute;
+        ++set->set.count;
+
+        return attribute;
+    }
+
+    return NULL;
+}
+
+Attribute* to_set_find_attribute_name(Attribute* attribute, const char* name) {
     if(attribute == NULL)
         return NULL;
 

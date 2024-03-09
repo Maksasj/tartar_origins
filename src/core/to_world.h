@@ -27,5 +27,6 @@ void to_world_create_chunk(World* world, long long xChunk, long long yChunk);
 Chunk* to_world_get_chunk(World* world, long long xChunk, long long yChunk);
 
 Attribute* to_world_get_tile(World* world, long long xPos, long long yPos);
+int to_world_set_tile(World* world, long long xPos, long long yPos, char* material);
 
 #endif
