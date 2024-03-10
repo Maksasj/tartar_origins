@@ -49,6 +49,15 @@ EffectResult* _to_vision_attribute_callback(EffectContext* context, void* buffer
         }
     }
 
+    // for(int i = 0; i < TO_SERVER_MAX_PLAYERS; ++i) {
+    //     Attribute* player = context->players[i];
+//
+    //     if(player != NULL) {
+    //         to_append_effect_result(result, player);
+    //         to_attribute_stringify(player);
+    //     }
+    // }
+
     return result;
 }
 

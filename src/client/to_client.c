@@ -10,18 +10,19 @@ int to_client_connect(TOClient* client, const char* api, unsigned long port) {
     #ifdef _WIN32
         servaddr.sin_addr.s_addr = inet_addr(api);
     #else
-        if ( inet_aton(argv[1], &servaddr.sin_addr) <= 0 ) {
+        if (inet_aton(argv[1], &servaddr.sin_addr) <= 0) {
             fprintf(stderr,"ERROR #3: Invalid remote IP address.\n");
             exit(1);
         }
     #endif
 
-    if (connect(client->socket, (struct sockaddr*)&servaddr, sizeof(servaddr)) < 0){
-        fprintf(stderr,"ERROR #4: error in connect().\n");
-        return 0;
+    for(;;) {
+        if (connect(client->socket, (struct sockaddr*)&servaddr, sizeof(servaddr)) >= 0)
+            break;
+
+        TO_LOG(TO_INFO, "Could not connect to server, trying again");
     }
 
-    // There we handle connection packages
     to_send_client_connection_request(client->socket);
 
     TOClientConnectionResponse response;
@@ -43,10 +44,22 @@ TOClient* to_new_client() {
 
     client->socket = socket(AF_INET, SOCK_STREAM,0);
 
-    if (client->socket < 0) {
-        fprintf(stderr,"ERROR #2: cannot create socket.\n");
-        exit(1);
-    }
+    if(client->socket < 0)
+        return NULL;
 
     return client;
+}
+
+void to_close_client(TOClient* client) {
+    #ifdef _WIN32
+        shutdown(client->socket, SD_BOTH);
+        if(closesocket(client->socket) == SOCKET_ERROR)
+            TO_LOG(TO_ERROR, "Failed to close socket");
+    #else
+        close(client->socket);
+    #endif
+}
+
+void to_free_client(TOClient* client) {
+    free(client);
 }

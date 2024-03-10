@@ -17,14 +17,19 @@ int to_handle_use_request_packet(TOServer* server, Connection* con, void* buffer
     for(int i = 0; i < domain->set.count; ++i) {
         Attribute* attribute = domain->set.attributes[i];
 
-        if((attribute == NULL) || attribute->info.type != EFFECT_ATTRIBUTE)
+        if((attribute == NULL) || (attribute->info.type != EFFECT_ATTRIBUTE))
             continue;
+
+        // Attribute* players[TO_SERVER_MAX_PLAYERS] = { NULL };
+        // for(int p = 0; p < TO_SERVER_MAX_PLAYERS; ++p)
+        //     players[p] = server->connections[p]->character;
 
         EffectContext context;
         context.effect = attribute;
         context.domain = domain;
         context.target= NULL;
         context.world = server->world;
+        // context.players = players;
 
         EffectResult* result = attribute->effect.effect(&context, buffer, length);
 
@@ -56,16 +61,14 @@ int to_handle_use_request_packet(TOServer* server, Connection* con, void* buffer
     return 1;
 }
 
+TOClientHandlePacketCallback callbacks[] = {
+    { TO_CLIENT_CONNECTION_REQUEST_PACKAGE, NULL },
+    { TO_USE_REQUEST_PACKAGE,               to_handle_use_request_packet }
+};
+unsigned long long callbackCount = sizeof(callbacks) / sizeof(TOClientHandlePacketCallback);
+
 int to_handle_client(TOServer* server, Connection* con) {
-    TOClientHandlePacketCallback callbacks[] = {
-        { TO_CLIENT_CONNECTION_REQUEST_PACKAGE, NULL },
-        { TO_USE_REQUEST_PACKAGE,               to_handle_use_request_packet }
-    };
-    unsigned long long callbackCount = sizeof(callbacks) / sizeof(TOClientHandlePacketCallback);
-
-    char buffer[1024];
-    memset(&buffer, 0, sizeof(buffer));
-
+    char buffer[1024] = { 0 };
     int length = recv(con->socket, buffer, sizeof(buffer), 0);
 
     if(length <= 0)
@@ -75,14 +78,15 @@ int to_handle_client(TOServer* server, Connection* con) {
     memcpy(&type, buffer, sizeof(TOReqPackageType));
 
     for(unsigned int i = 0; i < callbackCount; ++i) {
-        if(type == callbacks[i].type) {
-            int res = callbacks[i].callback(server, con, buffer + sizeof(TOUseRequest), length - sizeof(TOUseRequest));
+        if(type != callbacks[i].type)
+            continue;
 
-            if(res == -1)
-                return -1;
+        int res = callbacks[i].callback(server, con, buffer + sizeof(TOUseRequest), length - sizeof(TOUseRequest));
 
-            break;
-        }
+        if(res == -1)
+            return -1;
+
+        break;
     }
 
     return 1;

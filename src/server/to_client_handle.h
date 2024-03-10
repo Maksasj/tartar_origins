@@ -15,6 +15,9 @@ typedef struct TOClientHandlePacketCallback {
     TOClientHandlePacket* callback;
 } TOClientHandlePacketCallback;
 
+extern TOClientHandlePacketCallback callbacks[2];
+extern unsigned long long callbackCount;
+
 int to_handle_client(struct TOServer* server, Connection* con);
 
 #endif
