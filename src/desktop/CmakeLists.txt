@@ -1,0 +1,18 @@
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_BUILD_TYPE release)
+
+FILE(GLOB_RECURSE TO_DESKTOP_FILES *.cpp)
+add_executable(TODesktop ${TO_DESKTOP_FILES})
+
+target_link_libraries(TODesktop TOCore bebone omni_types)
+
+target_include_directories(TODesktop PUBLIC "${CMAKE_SOURCE_DIR}/src/core")
+
+target_include_directories(TODesktop PUBLIC "${CMAKE_SOURCE_DIR}/3dparty/bebone/src")
+target_include_directories(TODesktop PUBLIC "${CMAKE_SOURCE_DIR}/3dparty/bebone/3dparty/glad/include")
+target_include_directories(TODesktop PUBLIC "${CMAKE_SOURCE_DIR}/3dparty/bebone/3dparty/glfw/include")
+target_include_directories(TODesktop PUBLIC "${CMAKE_SOURCE_DIR}/3dparty/bebone/3dparty/Vulkan-Headers/include")
+target_include_directories(TODesktop PUBLIC "${CMAKE_SOURCE_DIR}/3dparty/bebone/3dparty/omni_types/src")
+target_include_directories(TODesktop PUBLIC "${CMAKE_SOURCE_DIR}/3dparty/bebone/3dparty/stb")
+target_include_directories(TODesktop PUBLIC "${CMAKE_SOURCE_DIR}/3dparty/bebone/3dparty/imgui")
