@@ -118,6 +118,9 @@ void to_client_map_callback(TOClient* client, int argc, char* argv[]) {
             if(_to_has_material(entity, "Grass"))
                 character = ',';
 
+            if(to_set_find_attribute_name(entity, "Humanoid") != NULL)
+                character = 'H';
+
             if(character == '?')
                 to_attribute_stringify(entity);
 

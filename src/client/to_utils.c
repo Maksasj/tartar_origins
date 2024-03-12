@@ -2,9 +2,9 @@
 
 char* to_stringify_log_level(TO_LOG_LEVEL logLevel) {
     switch (logLevel) {
-        case TO_INFO:       { return "INFO"; }
-        case TO_WARNING:    { return "WARNING"; }
-        case TO_ERROR:      { return "ERROR"; }
+        case TO_INFO:    { return "INFO"; }
+        case TO_WARNING: { return "WARNING"; }
+        case TO_ERROR:   { return "ERROR"; }
     }
 
     return NULL;

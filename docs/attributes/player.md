@@ -1,28 +1,6 @@
 # Player
 
 ```
-Set: [Pouch]
-    Tag: [Item]
-    Set: [Slime Juice]
-        Tag: [Resource]
-        Tag: [Item]
-        Value: [Count] [1]
-        Set: [Material]
-            Tag: [Slime]
-            Tag: [Slime Ball]
-            Tag: [Slime Juice]
-        
-Set: [Wooden Sword]
-    Tag: [Weapon]
-    Tag: [Short Sword]
-    Tag: [Item]
-    Effect: [Cutting Blow]
-    Set: [Stats]
-        Value: [Stamina]    [3]
-        Value: [Strength]   [3]
-        Value: [Intellect]  [1]
-        Value: [Armor]      [2]
-
 Set: [Player]
     Effect: [_Self]
     
@@ -34,18 +12,42 @@ Set: [Player]
             Value: [Armor]      [2]
         Tag: [Humanoid]
         Tag: [Human]
-        
+            Effect: [Vision]
+            Effect: [Movement]
+            Effect: [Godly hand]
+
     Set: [Metrics]
         Set: [Position]
             Value: [xCoordinate] [0]
             Value: [yCoordinate] [0]
     
-    Effect: [Vision]
-    Effect: [Movement]
-    Effect: [Godly hand]
+    Set: [Pouch]
+        Tag: [Item]
+
+        Set: [Container]
+            Set: [Slime Juice]
+                Tag: [Resource]
+                Tag: [Item]
+                Value: [Count] [1]
+                Set: [Material]
+                    Tag: [Slime]
+                    Tag: [Slime Ball]
+                    Tag: [Slime Juice]
     
-    Value: [Health] [10]
-        
     Set: [Equipment]
-        
+        Set: [Slot]
+            Tag: [Hand]
+            
+            Set: [Container]
+                Set: [Wooden Sword]
+                    Tag: [Weapon]
+                    Tag: [Short Sword]
+                    Tag: [Item]
+                    Tag: [Hand]
+                    Effect: [Cutting Blow]
+                    Set: [Stats]
+                        Value: [Stamina]    [3]
+                        Value: [Strength]   [3]
+                        Value: [Intellect]  [1]
+                        Value: [Armor]      [2]
 ```

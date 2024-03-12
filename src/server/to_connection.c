@@ -13,6 +13,7 @@ Connection* to_new_connection(int socket, struct sockaddr_in clientaddr) {
     to_set_append_attribute(self, to_create_movement_attribute());
     to_set_append_attribute(self, to_create_godly_hand_attribute());
     to_set_append_attribute(self, to_create_position_attribute(0, 0));
+    to_set_append_attribute(self, to_create_tag_attribute("Humanoid"));
 
     connection->character = self;
 
