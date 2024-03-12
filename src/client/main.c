@@ -8,7 +8,7 @@ TOClientCommand commands[] = {
     { "self", to_client_get_self_callback   },
     { "map",  to_client_map_callback        },
     { "go",   to_client_go_callback         },
-    { "ghand",to_client_ghand_callback  }
+    { "ghand",to_client_ghand_callback      }
 };
 unsigned int commandCount = sizeof(commands) / sizeof(TOClientCommand);
 
@@ -38,11 +38,9 @@ int to_client_handle(TOClient* client) {
     if(strcmp(argv[0], "exit") == 0)
         return 1;
 
-    for(unsigned int i = 0; i < commandCount; ++i) {
-        if(strcmp(argv[0], commands[i].command) == 0) {
+    for(unsigned int i = 0; i < commandCount; ++i)
+        if(strcmp(argv[0], commands[i].command) == 0)
             commands[i].callback(client, argc, argv);
-        }
-    }
 
     return 0;
 }
@@ -64,10 +62,9 @@ int main(){
 
     TO_LOG(TO_INFO, "Successfully connected to server");
 
-    for(;;) {
+    for(;;)
         if(to_client_handle(client))
             break;
-    }
 
     to_close_client(client);
     to_free_client(client);

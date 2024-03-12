@@ -43,7 +43,6 @@ void _to_propagate_use(TOServer* server, Attribute* domain, EffectUse* use, Attr
         context.players = players;
 
         EffectResult* result = attribute->effect.effect(&context, use);
-
         if(result == NULL)
             continue;
 
