@@ -1,23 +1,20 @@
 #include "to_godly_hand.h"
 
 // Todo add validation if can stay in tile or something
-EffectResult* _to_godly_hand_attribute_callback(EffectContext* context, void* buffer, unsigned long long length) {
-    if(strcmp(buffer, "ghand") != 0)
+EffectResult* _to_godly_hand_attribute_callback(EffectContext* context, EffectUse* use) {
+    if(!to_is_effect_use_id(use, "ghand"))
         return NULL;
 
-    long long newXCord = *(long long*)(buffer + 6 + 16);
-    long long newYCord = *(long long*)(buffer + 6 + 16 + sizeof(long long));
-
-    char material[16];
-    memcpy(material, buffer + 6, 16);
+    GodlyHandUse ghand;
+    memcpy(&ghand, use->buffer, sizeof(ghand));
 
     // Todo maybe check if valid material
-    to_world_set_tile(context->world, newXCord, newYCord, material);
+    to_world_set_tile(context->world, ghand.xCord, ghand.yCord, ghand.material);
 
     return NULL;
 }
 
 Attribute* to_create_godly_hand_attribute() {
-    return to_create_effect_attribute("Godly hand", _to_godly_hand_attribute_callback);
+    return to_create_effect_attribute("Godly Hand", _to_godly_hand_attribute_callback);
 }
 

@@ -18,6 +18,15 @@ typedef struct Value {
     signed long long value;
 } Value;
 
+typedef struct EffectUse {
+    char id[16];
+
+    unsigned long long size;
+    void* buffer;
+} EffectUse;
+
+int to_is_effect_use_id(EffectUse* use, const char id[16]);
+
 typedef struct Effect {
     AttributeInfo info;
 

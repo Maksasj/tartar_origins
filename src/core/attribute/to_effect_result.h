@@ -3,6 +3,7 @@
 
 #include <stdlib.h>
 
+struct EffectUse;
 struct World;
 struct Effect;
 union Attribute;
@@ -21,7 +22,7 @@ typedef struct EffectResult {
     unsigned int count;
     union Attribute** attributes;
 } EffectResult;
-typedef EffectResult* (EffectCallback)(struct EffectContext* context, void* buffer, unsigned long long length);
+typedef EffectResult* (EffectCallback)(struct EffectContext* context, struct EffectUse* use);
 
 EffectResult* to_create_effect_result();
 void to_append_effect_result(EffectResult* result, union Attribute* attributes);

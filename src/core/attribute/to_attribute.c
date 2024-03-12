@@ -2,6 +2,16 @@
 
 #include <stdio.h>
 
+int to_is_effect_use_id(EffectUse* use, const char id[16]) {
+    if(use == NULL)
+        return 0;
+
+    if(strcmp(use->id, id) == 0)
+        return 1;
+
+    return 0;
+}
+
 Attribute* to_create_tag_attribute(const char* name) {
     if(name == NULL)
         return NULL;

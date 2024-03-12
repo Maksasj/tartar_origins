@@ -1,20 +1,7 @@
 #include "to_client_command.h"
 
-void _to_send_use_request(TOClient* client, int argc, char* argv[]) {
-    char arguments[16][16];
-    for(int i = 0; i < 16; ++i)
-        memset(arguments[i], '\0', 16);
-
-    for(int i = 0; i < argc; ++i)
-        strcpy(arguments[i], argv[i]);
-
-    to_send_use_request(client->socket, arguments, sizeof(arguments));
-}
-
 Attribute* _to_get_self(TOClient* client) {
-    char *args[] = {"self"};
-
-    _to_send_use_request(client, 1, args);
+    to_send_use_request(client->socket, "self", NULL, 0);
 
     TOUseResponse useResponse;
     to_recv_use_response(client->socket, &useResponse);
@@ -37,32 +24,14 @@ Attribute* _to_get_self(TOClient* client) {
 }
 
 void to_client_get_self_callback(TOClient* client, int argc, char* argv[]) {
-    char *args[] = {"self"};
+    Attribute* self = _to_get_self(client);
 
-    _to_send_use_request(client, 1, args);
-
-    TOUseResponse useResponse;
-    to_recv_use_response(client->socket, &useResponse);
-
-    if(useResponse.type != ATTRIBUTE_RESPONSE)
-        return;
-
-    TOAttributeResponse aResponse;
-    to_recv_attribute_response(client->socket, &aResponse);
-
-    for (int i = 0; i < aResponse.count; ++i) {
-        to_attribute_stringify(aResponse.attributes[i]);
-        to_free_attribute(aResponse.attributes[i]);
+    if(self != NULL) {
+        to_attribute_stringify(self);
+        to_free_attribute(self);
+    } else {
+        TO_LOG(TO_WARNING, "Failed to get self");
     }
-
-    free(aResponse.attributes);
-}
-
-void to_client_use_callback(TOClient* client, int argc, char* argv[]) {
-    _to_send_use_request(client, argc, argv);
-
-    TOUseResponse response;
-    to_recv_use_response(client->socket, &response);
 }
 
 // Todo fix memory leaks
@@ -78,8 +47,7 @@ void to_client_map_callback(TOClient* client, int argc, char* argv[]) {
 
     to_free_attribute(self);
 
-    char *args[] = {"vision"};
-    _to_send_use_request(client, 1, args);
+    to_send_use_request(client->socket, "vision", NULL, 0);
 
     TOUseResponse useResponse;
     to_recv_use_response(client->socket, &useResponse);
@@ -147,9 +115,8 @@ void to_client_go_callback(TOClient* client, int argc, char* argv[]) {
     if(self == NULL)
         return;
 
-    long long xCord;
-    long long yCord;
-    if(!_to_get_position(self, &xCord, &yCord)) {
+    MovementUse use;
+    if(!_to_get_position(self, &use.xCord, &use.yCord)) {
         to_free_attribute(self);
         return;
     }
@@ -157,22 +124,15 @@ void to_client_go_callback(TOClient* client, int argc, char* argv[]) {
     to_free_attribute(self);
 
     if(strcmp(argv[1], "up") == 0)
-        yCord += 1;
+        use.yCord += 1;
     else if(strcmp(argv[1], "down") == 0)
-        yCord -= 1;
+        use.yCord -= 1;
     else if(strcmp(argv[1], "left") == 0)
-        xCord -= 1;
+        use.xCord -= 1;
     else if(strcmp(argv[1], "right") == 0)
-        xCord += 1;
+        use.xCord += 1;
 
-    unsigned long long size = 3 + 2 * sizeof(long long);
-    char* buffer = malloc(size);
-    memcpy(buffer, "go", 3);
-
-    memcpy(buffer + 3, &xCord, sizeof(long long));
-    memcpy(buffer + 3 + sizeof(long long), &yCord, sizeof(long long));
-
-    to_send_use_request(client->socket, buffer, size);
+    to_send_use_request(client->socket, "go", &use, sizeof(use));
 
     TOUseResponse useResponse;
     to_recv_use_response(client->socket, &useResponse);
@@ -186,9 +146,10 @@ void to_client_ghand_callback(TOClient* client, int argc, char* argv[]) {
     if(self == NULL)
         return;
 
-    long long xCord;
-    long long yCord;
-    if(!_to_get_position(self, &xCord, &yCord)) {
+    GodlyHandUse use;
+    memcpy(use.material, argv[2], 16);
+
+    if(!_to_get_position(self, &use.xCord, &use.yCord)) {
         to_free_attribute(self);
         return;
     }
@@ -196,23 +157,15 @@ void to_client_ghand_callback(TOClient* client, int argc, char* argv[]) {
     to_free_attribute(self);
 
     if(strcmp(argv[1], "up") == 0)
-        yCord += 1;
+        use.yCord += 1;
     else if(strcmp(argv[1], "down") == 0)
-        yCord -= 1;
+        use.yCord -= 1;
     else if(strcmp(argv[1], "left") == 0)
-        xCord -= 1;
+        use.xCord -= 1;
     else if(strcmp(argv[1], "right") == 0)
-        xCord += 1;
+        use.xCord += 1;
 
-    unsigned long long size = 6 + 16 + 2 * sizeof(long long);
-    char* buffer = malloc(size);
-    memcpy(buffer, "ghand", 6);
-    memcpy(buffer + 6, argv[2], 16);
-
-    memcpy(buffer + 16 + 6, &xCord, sizeof(long long));
-    memcpy(buffer + 16 + 6 + sizeof(long long), &yCord, sizeof(long long));
-
-    to_send_use_request(client->socket, buffer, size);
+    to_send_use_request(client->socket, "ghand", &use, sizeof(use));
 
     TOUseResponse useResponse;
     to_recv_use_response(client->socket, &useResponse);

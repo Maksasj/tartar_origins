@@ -8,7 +8,7 @@ int to_handle_client_connection_request_packet(TOServer* server, Connection* con
     return -1;
 }
 
-void _to_propagate_use(TOServer* server, Attribute* domain, void* buffer, unsigned long long length, Attribute*** attributes, unsigned long long* attributeCount) {
+void _to_propagate_use(TOServer* server, Attribute* domain, EffectUse* use, Attribute*** attributes, unsigned long long* attributeCount) {
     if(domain->info.type != SET_ATTRIBUTE)
         return;
 
@@ -29,7 +29,7 @@ void _to_propagate_use(TOServer* server, Attribute* domain, void* buffer, unsign
             continue;
 
         if(attribute->info.type == SET_ATTRIBUTE)
-            _to_propagate_use(server, attribute, buffer, length, attributes, attributeCount);
+            _to_propagate_use(server, attribute, use, attributes, attributeCount);
 
         if(attribute->info.type != EFFECT_ATTRIBUTE)
             continue;
@@ -42,7 +42,7 @@ void _to_propagate_use(TOServer* server, Attribute* domain, void* buffer, unsign
         context.world = server->world;
         context.players = players;
 
-        EffectResult* result = attribute->effect.effect(&context, buffer, length);
+        EffectResult* result = attribute->effect.effect(&context, use);
 
         if(result == NULL)
             continue;
@@ -59,11 +59,11 @@ void _to_propagate_use(TOServer* server, Attribute* domain, void* buffer, unsign
     }
 }
 
-int to_handle_use_request_packet(TOServer* server, Connection* con, void* buffer, unsigned long long length) {
+int to_handle_use_request_packet(TOServer* server, Connection* con, EffectUse* use) {
     unsigned long long attributeCount = 0;
     Attribute** attributes = NULL;
 
-    _to_propagate_use(server, con->character, buffer, length, &attributes, &attributeCount);
+    _to_propagate_use(server, con->character, use, &attributes, &attributeCount);
 
     if(attributeCount == 0 || attributes == NULL) {
         if(to_send_use_response(con->socket, EMPTY_RESPONSE) == -1)
@@ -101,7 +101,11 @@ int to_handle_client(TOServer* server, Connection* con) {
         if(type != callbacks[i].type)
             continue;
 
-        int res = callbacks[i].callback(server, con, buffer + sizeof(TOUseRequest), length - sizeof(TOUseRequest));
+        TOUseRequest request;
+        memcpy(&request, buffer, sizeof(request));
+        request.use.buffer = buffer + sizeof(TOUseRequest);
+
+        int res = callbacks[i].callback(server, con, &request.use);
 
         if(res == -1)
             return -1;

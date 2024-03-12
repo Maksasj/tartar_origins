@@ -1,11 +1,8 @@
 #include "to_vision_attribute.h"
 #include "to_world.h"
 
-EffectResult* _to_vision_attribute_callback(EffectContext* context, void* buffer, unsigned long long length) {
-    char argv[16][16];
-    memcpy(argv, buffer, sizeof(argv));
-
-    if(strcmp(argv[0], "vision") != 0)
+EffectResult* _to_vision_attribute_callback(EffectContext* context, EffectUse* use) {
+    if(!to_is_effect_use_id(use, "vision"))
         return NULL;
 
     long long xCord;

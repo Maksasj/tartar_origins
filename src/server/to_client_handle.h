@@ -8,7 +8,7 @@
 
 struct TOServer;
 
-typedef int (TOClientHandlePacket)(struct TOServer* server, Connection* con, void* buffer, unsigned long long length);
+typedef int (TOClientHandlePacket)(struct TOServer* server, Connection* con, EffectUse* use);
 
 typedef struct TOClientHandlePacketCallback {
     TOReqPackageType type;

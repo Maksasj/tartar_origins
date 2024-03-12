@@ -7,7 +7,12 @@
 
 #define WALK_DISTANCE 1
 
-EffectResult* _to_movement_attribute_callback(EffectContext* context, void* buffer, unsigned long long length);
+typedef struct MovementUse {
+    long long xCord;
+    long long yCord;
+} MovementUse;
+
+EffectResult* _to_movement_attribute_callback(EffectContext* context, EffectUse* use);
 Attribute* to_create_movement_attribute();
 
 #endif

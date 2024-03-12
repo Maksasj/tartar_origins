@@ -6,9 +6,13 @@
 #include "to_position_attribute.h"
 #include "to_world.h"
 
-#define WALK_DISTANCE 1
+typedef struct GodlyHandUse {
+    char material[16];
+    long long xCord;
+    long long yCord;
+} GodlyHandUse;
 
-EffectResult* _to_godly_hand_attribute_callback(EffectContext* context, void* buffer, unsigned long long length);
+EffectResult* _to_godly_hand_attribute_callback(EffectContext* context, EffectUse* use);
 Attribute* to_create_godly_hand_attribute();
 
 #endif
