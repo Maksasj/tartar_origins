@@ -13,5 +13,6 @@
 #include "all/to_material_attribute.h"
 #include "all/to_godly_hand.h"
 #include "all/to_slashing_attribute.h"
+#include "all/to_stat_attribute.h"
 
 #endif

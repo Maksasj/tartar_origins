@@ -106,7 +106,7 @@ void to_client_map_callback(TOClient* client, int argc, char* argv[]) {
 
     map[(TO_CLIENT_MAP_PREVIEW_WIDTH / 2)][(TO_CLIENT_MAP_PREVIEW_HEIGHT / 2)] = 'P';
 
-    printf("Map around (%dx%d):\n", TO_CLIENT_MAP_PREVIEW_WIDTH, TO_CLIENT_MAP_PREVIEW_HEIGHT);
+    printf("|Map around (%dx%d):\n", TO_CLIENT_MAP_PREVIEW_WIDTH, TO_CLIENT_MAP_PREVIEW_HEIGHT);
 
     putc('+', stdout);
 
@@ -225,4 +225,18 @@ void to_client_slashing_callback(TOClient* client, int argc, char* argv[]) {
 
     TOUseResponse useResponse;
     to_recv_use_response(client->socket, &useResponse);
+}
+
+void to_client_stats_callback(TOClient* client, int argc, char* argv[]) {
+    Attribute* self = _to_get_self(client);
+    if(self == NULL)
+        return;
+
+    printf("Character Stats\n");
+    printf("Stamina: %lld\n", _to_stat_traverse(self, "Stamina"));
+    printf("Strength: %lld\n", _to_stat_traverse(self, "Strength"));
+    printf("Intellect: %lld\n", _to_stat_traverse(self, "Intellect"));
+    printf("Armor: %lld\n", _to_stat_traverse(self, "Armor"));
+
+    to_free_attribute(self);
 }

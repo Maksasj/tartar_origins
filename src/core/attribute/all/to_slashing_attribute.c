@@ -21,6 +21,8 @@ EffectResult* _to_slashing_attribute_callback(EffectContext* context, EffectUse*
     if((xDelta > SLASHING_DISTANCE) || yDelta > SLASHING_DISTANCE)
         return NULL;
 
+    long long strength = _to_stat_traverse(context->initiator, "Strength");
+
     for(int i = 0; i < TO_WORLD_MAX_CREATURES; ++i) {
         Attribute* creature = context->world->creatures[i];
 
@@ -38,8 +40,7 @@ EffectResult* _to_slashing_attribute_callback(EffectContext* context, EffectUse*
         Attribute* health = to_set_find_attribute_name(creature, "Health");
 
         if(health != NULL) {
-            health->value.value -= 1;
-            printf("Target health %lld", health->value.value);
+            health->value.value -= strength;
 
             if(health->value.value <= 0) {
                 to_set_remove_attribute_name(creature, "Health");

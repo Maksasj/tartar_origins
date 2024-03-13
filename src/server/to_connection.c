@@ -8,6 +8,12 @@ Connection* to_new_connection(int socket, struct sockaddr_in clientaddr) {
 
     Attribute* self = to_create_set_attribute("Player");
 
+    Attribute* warrior = to_create_set_attribute("Warrior");
+    to_set_append_attribute(warrior, to_create_stat_attribute("Stamina", 3));
+    to_set_append_attribute(warrior, to_create_stat_attribute("Strength", 2));
+    to_set_append_attribute(warrior, to_create_stat_attribute("Intellect", 1));
+    to_set_append_attribute(warrior, to_create_stat_attribute("Armor", 2));
+
     to_set_append_attribute(self, to_create_self_attribute());
     to_set_append_attribute(self, to_create_vision_attribute());
     to_set_append_attribute(self, to_create_movement_attribute());
@@ -15,11 +21,12 @@ Connection* to_new_connection(int socket, struct sockaddr_in clientaddr) {
     to_set_append_attribute(self, to_create_position_attribute(0, 0));
     to_set_append_attribute(self, to_create_tag_attribute("Humanoid"));
     to_set_append_attribute(self, to_create_value_attribute("Health", 10));
+    to_set_append_attribute(self, warrior);
 
     Attribute* hand = to_create_set_attribute("Hand");
 
     Attribute* sword = to_create_set_attribute("Sword");
-    to_set_append_attribute(sword, to_create_value_attribute("Damage", 5));
+    to_set_append_attribute(sword, to_create_stat_attribute("Strength", 2));
     to_set_append_attribute(sword, to_create_slashing_attribute());
 
     to_set_append_attribute(hand, sword);

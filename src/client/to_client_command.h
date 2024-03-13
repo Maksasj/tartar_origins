@@ -14,3 +14,4 @@ void to_client_map_callback(TOClient* client, int argc, char* argv[]);
 void to_client_go_callback(TOClient* client, int argc, char* argv[]);
 void to_client_ghand_callback(TOClient* client, int argc, char* argv[]);
 void to_client_slashing_callback(TOClient* client, int argc, char* argv[]);
+void to_client_stats_callback(TOClient* client, int argc, char* argv[]);

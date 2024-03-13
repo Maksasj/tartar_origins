@@ -9,7 +9,8 @@ TOClientCommand commands[] = {
     { "map",        to_client_map_callback          },
     { "go",         to_client_go_callback           },
     { "ghand",      to_client_ghand_callback        },
-    { "slashing",   to_client_slashing_callback     }
+    { "slashing",   to_client_slashing_callback     },
+    { "stats",      to_client_stats_callback        },
 };
 unsigned int commandCount = sizeof(commands) / sizeof(TOClientCommand);
 
