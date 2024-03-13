@@ -7,9 +7,6 @@ typedef struct AttributeInfo {
     AttributeType type;
 
     char name[16];
-
-    unsigned int class;
-    unsigned int variation;
 } AttributeInfo;
 
 #endif

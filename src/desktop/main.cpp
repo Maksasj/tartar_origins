@@ -1,51 +1,13 @@
-#include "bebone/bebone.h"
-
-const unsigned int SCR_WIDTH = 800;
-const unsigned int SCR_HEIGHT = 600;
-
-using namespace bebone::gfx;
-using namespace bebone::gfx::opengl;
+#include "to_app.h"
 
 int main() {
-    GLFWContext::init();
+    to::TOApp app;
 
-    auto window = WindowFactory::create_window("Tartar Origins", SCR_WIDTH, SCR_HEIGHT, GfxAPI::OPENGL);
-
-    GLContext::load_opengl();
-    GLContext::set_viewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
-
-    GLContext::enable(GL_DEPTH_TEST);
-
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-
-    ImGuiIO &io = ImGui::GetIO();
-    io.ConfigFlags |= ImGuiConfigFlags_None;
-    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-
-    ImGui::CreateContext();
-    ImGui::StyleColorsDark();
-    ImGui_ImplGlfw_InitForOpenGL(window->get_backend(), true);
-    ImGui_ImplOpenGL3_Init("#version 330");
-
-    while (!window->closing()) {
-        GLContext::clear_color(0.2f, 0.2f, 0.2f, 1.0f);
-        GLContext::clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        ImGui_ImplOpenGL3_NewFrame();
-        ImGui_ImplGlfw_NewFrame();
-        ImGui::NewFrame();
-
-        ImGui::ShowDemoWindow(nullptr);
-
-        ImGui::Render();
-        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
-        glfwSwapBuffers(window->get_backend());
-        GLFWContext::poll_events();
-    }
-
-    GLFWContext::terminate();
+    app.init();
+    app.load();
+    app.run();
+    app.cleanup();
+    app.terminate();
 
     return 0;
 }

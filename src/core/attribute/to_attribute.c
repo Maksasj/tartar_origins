@@ -25,8 +25,6 @@ Attribute* to_create_tag_attribute(const char* name) {
 
     strcpy(attribute->info.name, name);
     attribute->info.type = TAG_ATTRIBUTE;
-    attribute->info.class = 0;
-    attribute->info.variation = 0;
 
     return attribute;
 }
@@ -44,8 +42,6 @@ Attribute* to_create_value_attribute(const char* name, unsigned long long value)
 
     strcpy(attribute->info.name, name);
     attribute->info.type = VALUE_ATTRIBUTE;
-    attribute->info.class = 0;
-    attribute->info.variation = 0;
 
     attribute->value.value = value;
 
@@ -65,8 +61,6 @@ Attribute* to_create_effect_attribute(const char* name, EffectCallback* effect) 
 
     strcpy(attribute->info.name, name);
     attribute->info.type = EFFECT_ATTRIBUTE;
-    attribute->info.class = 0;
-    attribute->info.variation = 0;
 
     attribute->effect.effect = effect;
 
@@ -86,8 +80,6 @@ Attribute* to_create_set_attribute(const char* name) {
 
     strcpy(attribute->info.name, name);
     attribute->info.type = SET_ATTRIBUTE;
-    attribute->info.class = 0;
-    attribute->info.variation = 0;
 
     attribute->set.count = 0;
     memset(attribute->set.attributes, 0, 16 * sizeof(Attribute*));
