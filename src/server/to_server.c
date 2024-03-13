@@ -5,7 +5,11 @@ TOServer* to_new_server(unsigned int port) {
     memset(server->connections, 0, sizeof(Connection*) * TO_SERVER_MAX_PLAYERS);
 
     World* world = to_create_world();
-    to_world_create_chunk(world, 0, 0);
+
+    for(int x = -8; x < 8; ++x)
+        for(int y = -8; y < 8; ++y)
+            to_world_create_chunk(world, x, y);
+
     server->world = world;
 
     #ifdef _WIN32

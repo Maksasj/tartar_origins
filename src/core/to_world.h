@@ -15,9 +15,7 @@ typedef struct Chunk {
 } Chunk;
 
 typedef struct World {
-    unsigned int chunkCount;
-    Chunk* chunks;
-
+    Chunk* chunks[1024];
     Attribute* creatures[1024];
 } World;
 

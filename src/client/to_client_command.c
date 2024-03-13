@@ -58,8 +58,11 @@ void to_client_map_callback(TOClient* client, int argc, char* argv[]) {
     TOAttributeResponse aResponse;
     to_recv_attribute_response(client->socket, &aResponse);
 
-    char map[15][15];
-    memset(map, '*', sizeof(map));
+    #define TO_CLIENT_MAP_PREVIEW_WIDTH 50
+    #define TO_CLIENT_MAP_PREVIEW_HEIGHT 15
+
+    char map[TO_CLIENT_MAP_PREVIEW_WIDTH][TO_CLIENT_MAP_PREVIEW_HEIGHT];
+    memset(map, ' ', sizeof(map));
 
     for(int i = 0; i < aResponse.count; ++i) {
         Attribute* entity = aResponse.attributes[i];
@@ -74,10 +77,10 @@ void to_client_map_callback(TOClient* client, int argc, char* argv[]) {
             continue;
         }
 
-        long long xDelta = (thingXCord - xCord) + 7;
-        long long yDelta = (thingYCord - yCord) + 7;
+        long long xDelta = (thingXCord - xCord) + (TO_CLIENT_MAP_PREVIEW_WIDTH / 2);
+        long long yDelta = (thingYCord - yCord) + (TO_CLIENT_MAP_PREVIEW_HEIGHT / 2);
 
-        if((xDelta >= 0 && xDelta <= 14) && (yDelta >= 0 && yDelta <= 14)) {
+        if((xDelta >= 0 && xDelta < TO_CLIENT_MAP_PREVIEW_WIDTH) && (yDelta >= 0 && yDelta < TO_CLIENT_MAP_PREVIEW_HEIGHT)) {
             char character = '?';
 
             if(_to_has_material(entity, "Stone"))
@@ -92,17 +95,36 @@ void to_client_map_callback(TOClient* client, int argc, char* argv[]) {
             if(character == '?')
                 to_attribute_stringify(entity);
 
-            map[14 - yDelta][xDelta] = character;
+            map[xDelta][yDelta] = character;
         }
 
         to_free_attribute(entity);
     }
 
-    map[7][7] = 'P';
+    map[(TO_CLIENT_MAP_PREVIEW_WIDTH / 2)][(TO_CLIENT_MAP_PREVIEW_HEIGHT / 2)] = 'P';
 
-    printf("Map around (15x15):\n");
-    for(int y = 0; y < 15; ++y)
-        printf("%.15s\n", map[y]);
+    printf("Map around (%dx%d):\n", TO_CLIENT_MAP_PREVIEW_WIDTH, TO_CLIENT_MAP_PREVIEW_HEIGHT);
+
+    putc('+', stdout);
+
+    for(int x = 0; x < TO_CLIENT_MAP_PREVIEW_WIDTH; ++x)
+        putc('-', stdout);
+
+    printf("+\n");
+
+    for(int y = 0; y < TO_CLIENT_MAP_PREVIEW_HEIGHT; ++y) {
+        putc('|', stdout);
+        for(int x = 0; x < TO_CLIENT_MAP_PREVIEW_WIDTH; ++x)
+            putc(map[x][(TO_CLIENT_MAP_PREVIEW_HEIGHT - 1) - y], stdout);
+        printf("|\n");
+    }
+
+    putc('+', stdout);
+
+    for(int x = 0; x < TO_CLIENT_MAP_PREVIEW_WIDTH; ++x)
+        putc('-', stdout);
+
+    printf("+\n");
 
     free(aResponse.attributes);
 }

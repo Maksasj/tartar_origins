@@ -6,5 +6,6 @@
 #include "main_dockspace.h"
 #include "map_preview.h"
 #include "simulation_info.h"
+#include "console_log.h"
 
 #endif

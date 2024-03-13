@@ -17,6 +17,7 @@ namespace to {
 
             std::shared_ptr<MapPreviewWindow> mapPreviewWindow;
             std::shared_ptr<SimulationInfoWindow> simulationInfoWindow;
+            std::shared_ptr<ConsoleLogWindow> consoleLogWindow;
 
         public:
             void init();

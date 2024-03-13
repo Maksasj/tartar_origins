@@ -35,6 +35,7 @@ namespace to {
 
         mapPreviewWindow = std::make_shared<MapPreviewWindow>();
         simulationInfoWindow = std::make_shared<SimulationInfoWindow>();
+        consoleLogWindow = std::make_shared<ConsoleLogWindow>();
     }
 
     void TOApp::load() {
@@ -63,6 +64,7 @@ namespace to {
             mainDockspaceWindow->run([&]() {
                 mapPreviewWindow->run();
                 simulationInfoWindow->run();
+                consoleLogWindow->run();
             });
 
             ImGui::Render();

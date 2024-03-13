@@ -25,10 +25,11 @@ EffectResult* _to_vision_attribute_callback(EffectContext* context, EffectUse* u
         if(!_to_get_position(creature, &xCordCreature, &yCordCreature))
             continue;
 
-        long long xDelta = abs(xCord - xCordCreature);
-        long long yDelta = abs(yCord - yCordCreature);
+        double x = (double) xCord - (double )xCordCreature;
+        double y = (double) yCord - (double )yCordCreature;
+        double distanceSqr = x*x + y*y;
 
-        if(xDelta > VISION_DISTANCE || yDelta > VISION_DISTANCE)
+        if(distanceSqr > VISION_DISTANCE * VISION_DISTANCE)
             continue;
 
         to_append_effect_result(result, creature);
@@ -41,8 +42,14 @@ EffectResult* _to_vision_attribute_callback(EffectContext* context, EffectUse* u
 
             Attribute* tile = to_world_get_tile(context->world, tileXCord, tileYCord);
 
-            if(tile != NULL)
+            if(tile != NULL) {
+                double distanceSqr = x*x + y*y;
+
+                if(distanceSqr > VISION_DISTANCE * VISION_DISTANCE)
+                    continue;
+
                 to_append_effect_result(result, tile);
+            }
         }
     }
 
