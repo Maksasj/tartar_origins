@@ -16,7 +16,6 @@ typedef struct EffectContext {
     union Attribute* domain;
     union Attribute* target;
     struct World* world;
-    union Attribute** players;
 } EffectContext;
 
 typedef struct EffectResult {

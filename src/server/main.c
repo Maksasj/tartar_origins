@@ -74,6 +74,11 @@ int main() {
                 close(socket);
             #endif
 
+            if(!to_world_terminate_creature(server->world, con->character))
+                TO_LOG(TO_WARNING, "Failed to terminate disconnected player creature");
+
+            con->character = NULL;
+
             to_free_connection(con);
             server->connections[i] = NULL;
         }

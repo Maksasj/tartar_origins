@@ -19,14 +19,15 @@ EffectResult* _to_vision_attribute_callback(EffectContext* context, EffectUse* u
 
             Attribute* tile = to_world_get_tile(context->world, tileXCord, tileYCord);
 
-            if(tile != NULL) {
-                double distanceSqr = x*x + y*y;
+            if(tile == NULL)
+                continue;
 
-                if(distanceSqr > VISION_DISTANCE * VISION_DISTANCE)
-                    continue;
+            double distanceSqr = x*x + y*y;
 
-                to_append_effect_result(result, tile);
-            }
+            if(distanceSqr > VISION_DISTANCE * VISION_DISTANCE)
+                continue;
+
+            to_append_effect_result(result, tile);
         }
     }
 
@@ -51,10 +52,6 @@ EffectResult* _to_vision_attribute_callback(EffectContext* context, EffectUse* u
 
         to_append_effect_result(result, creature);
     }
-
-    for(int i = 0; i < TO_SERVER_MAX_PLAYERS; ++i)
-        if(context->players[i] != NULL)
-            to_append_effect_result(result, context->players[i]);
 
     return result;
 }

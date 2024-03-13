@@ -12,16 +12,6 @@ void _to_propagate_use(TOServer* server, Attribute* initiator, Attribute* domain
     if(domain->info.type != SET_ATTRIBUTE)
         return;
 
-    // Prepare player list
-    Attribute* players[TO_SERVER_MAX_PLAYERS];
-
-    for(int p = 0; p < TO_SERVER_MAX_PLAYERS; ++p) {
-        if(server->connections[p] != NULL)
-            players[p] = server->connections[p]->character;
-        else
-            players[p] = NULL;
-    }
-
     for(int i = 0; i < TO_SET_ATTRIBUTE_MAX_CHILDS; ++i) {
         Attribute* attribute = domain->set.attributes[i];
 
@@ -41,7 +31,6 @@ void _to_propagate_use(TOServer* server, Attribute* initiator, Attribute* domain
         context.domain = domain;
         context.target= NULL;
         context.world = server->world;
-        context.players = players;
 
         EffectResult* result = attribute->effect.effect(&context, use);
         if(result == NULL)

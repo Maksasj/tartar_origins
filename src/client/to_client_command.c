@@ -95,6 +95,9 @@ void to_client_map_callback(TOClient* client, int argc, char* argv[]) {
             if(to_set_find_attribute_name(entity, "Monster") != NULL)
                 character = 'M';
 
+            if(to_set_find_attribute_name(entity, "Dead") != NULL)
+                character = 'D';
+
             if(character == '?')
                 to_attribute_stringify(entity);
 
@@ -106,7 +109,7 @@ void to_client_map_callback(TOClient* client, int argc, char* argv[]) {
 
     map[(TO_CLIENT_MAP_PREVIEW_WIDTH / 2)][(TO_CLIENT_MAP_PREVIEW_HEIGHT / 2)] = 'P';
 
-    printf("|Map around (%dx%d):\n", TO_CLIENT_MAP_PREVIEW_WIDTH, TO_CLIENT_MAP_PREVIEW_HEIGHT);
+    printf("Map around (%dx%d):\n", TO_CLIENT_MAP_PREVIEW_WIDTH, TO_CLIENT_MAP_PREVIEW_HEIGHT);
 
     putc('+', stdout);
 

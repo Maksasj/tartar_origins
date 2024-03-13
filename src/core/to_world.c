@@ -70,6 +70,19 @@ int to_world_summon_creature(World* world, Attribute* creature) {
     return 0;
 }
 
+int to_world_terminate_creature(World* world, Attribute* creature) {
+    for(int i = 0; i < TO_WORLD_MAX_CREATURES; ++i) {
+        if(creature != world->creatures[i])
+            continue;
+
+        to_free_attribute(world->creatures[i]);
+        world->creatures[i] = NULL;
+        return 1;
+    }
+
+    return 0;
+}
+
 Attribute* to_world_get_tile(World* world, long long xPos, long long yPos) {
     long long xChunk = xPos >> 4;
     long long yChunk = yPos >> 4;

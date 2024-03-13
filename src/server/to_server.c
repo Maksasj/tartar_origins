@@ -85,5 +85,9 @@ Connection* to_server_accept_connections(TOServer* server) {
 
     to_send_client_connection_response(socket);
 
-    return to_new_connection(socket, clientAddr);
+    Connection* connection = to_new_connection(socket, clientAddr);
+
+    to_world_summon_creature(server->world, connection->character);
+
+    return connection;
 }

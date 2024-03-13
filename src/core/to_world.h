@@ -28,6 +28,7 @@ void to_world_create_chunk(World* world, long long xChunk, long long yChunk);
 Chunk* to_world_get_chunk(World* world, long long xChunk, long long yChunk);
 
 int to_world_summon_creature(World* world, Attribute* creature);
+int to_world_terminate_creature(World* world, Attribute* creature);
 
 Attribute* to_world_get_tile(World* world, long long xPos, long long yPos);
 int to_world_set_tile(World* world, long long xPos, long long yPos, char* material);
