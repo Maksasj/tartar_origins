@@ -1,6 +1,12 @@
 # Player
 
 ```
+Set: [Slime]
+    Tag: [Monster]
+    Value: [Health] [5]
+```
+
+```
 Set: [Player]
     Effect: [_Self]
     

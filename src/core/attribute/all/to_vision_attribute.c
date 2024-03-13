@@ -7,7 +7,7 @@ EffectResult* _to_vision_attribute_callback(EffectContext* context, EffectUse* u
 
     long long xCord;
     long long yCord;
-    if(!_to_get_position(context->domain, &xCord, &yCord))
+    if(!_to_get_position(context->initiator, &xCord, &yCord))
         return NULL;
 
     EffectResult* result = to_create_effect_result();

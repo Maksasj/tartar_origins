@@ -18,6 +18,10 @@ typedef struct Value {
     long long value;
 } Value;
 
+union Attribute;
+
+long long to_value_accumulate(union Attribute* attribute, const char name[16]);
+
 typedef struct EffectUse {
     char id[16];
 

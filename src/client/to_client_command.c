@@ -236,10 +236,10 @@ void to_client_stats_callback(TOClient* client, int argc, char* argv[]) {
         return;
 
     printf("Character Stats\n");
-    printf("Stamina: %lld\n", _to_stat_traverse(self, "Stamina"));
-    printf("Strength: %lld\n", _to_stat_traverse(self, "Strength"));
-    printf("Intellect: %lld\n", _to_stat_traverse(self, "Intellect"));
-    printf("Armor: %lld\n", _to_stat_traverse(self, "Armor"));
+    printf("Stamina: %lld\n", to_value_accumulate(self, "Stamina"));
+    printf("Strength: %lld\n", to_value_accumulate(self, "Strength"));
+    printf("Intellect: %lld\n", to_value_accumulate(self, "Intellect"));
+    printf("Armor: %lld\n", to_value_accumulate(self, "Armor"));
 
     to_free_attribute(self);
 }

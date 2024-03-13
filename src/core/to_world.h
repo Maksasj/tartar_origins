@@ -27,6 +27,8 @@ World* to_create_world();
 void to_world_create_chunk(World* world, long long xChunk, long long yChunk);
 Chunk* to_world_get_chunk(World* world, long long xChunk, long long yChunk);
 
+void to_world_summon_gods(World* world);
+
 int to_world_summon_creature(World* world, Attribute* creature);
 int to_world_terminate_creature(World* world, Attribute* creature);
 

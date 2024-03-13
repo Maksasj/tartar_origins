@@ -11,13 +11,15 @@ TOServer* to_new_server(unsigned int port) {
         for(int y = -8; y < 8; ++y)
             to_world_create_chunk(world, x, y);
 
+    // Summon sample monster
     Attribute* monster = to_create_set_attribute("Slime");
-
     to_set_append_attribute(monster, to_create_tag_attribute("Monster"));
     to_set_append_attribute(monster, to_create_position_attribute(1, 1));
     to_set_append_attribute(monster, to_create_value_attribute("Health", 5));
-
     to_world_summon_creature(world, monster);
+
+    // Summon gods
+    to_world_summon_gods(world);
 
     #ifdef _WIN32
         WSADATA data;
@@ -29,11 +31,12 @@ TOServer* to_new_server(unsigned int port) {
         return NULL;
     }
 
-    struct sockaddr_in servaddr; // Serverio adreso struktūra
+    struct sockaddr_in servaddr;
     memset(&servaddr,0, sizeof(servaddr));
-    servaddr.sin_family = AF_INET; // nurodomas protokolas (IP)
+
+    servaddr.sin_family = AF_INET;
     servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
-    servaddr.sin_port = htons(port); // nurodomas portas
+    servaddr.sin_port = htons(port);
 
     if (bind(server->socket, (struct sockaddr *)&servaddr,sizeof(servaddr)) < 0){
         TO_LOG(TO_ERROR, "Failed to bind listening socket");

@@ -2,6 +2,29 @@
 
 #include <stdio.h>
 
+long long to_value_accumulate(union Attribute* attribute, const char name[16]) {
+    if(attribute == NULL)
+        return 0;
+
+    if(attribute->info.type == VALUE_ATTRIBUTE) {
+        if(strcmp(attribute->info.name, name) == 0)
+            return attribute->value.value;
+    } else if(attribute->info.type == SET_ATTRIBUTE) {
+        long long value = 0;
+
+        for(int i = 0; i < TO_SET_ATTRIBUTE_MAX_CHILDS; ++i) {
+            Attribute* at = attribute->set.attributes[i];
+
+            if(at != NULL)
+                value += to_value_accumulate(at, name);
+        }
+
+        return value;
+    }
+
+    return 0;
+}
+
 int to_is_effect_use_id(EffectUse* use, const char id[16]) {
     if(use == NULL)
         return 0;

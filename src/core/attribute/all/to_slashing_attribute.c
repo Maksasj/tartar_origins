@@ -2,7 +2,6 @@
 
 #include "to_world.h"
 
-// Todo add validation if can stay in tile or something
 EffectResult* _to_slashing_attribute_callback(EffectContext* context, EffectUse* use) {
     if(!to_is_effect_use_id(use, "slashing"))
         return NULL;
@@ -21,7 +20,7 @@ EffectResult* _to_slashing_attribute_callback(EffectContext* context, EffectUse*
     if((xDelta > SLASHING_DISTANCE) || yDelta > SLASHING_DISTANCE)
         return NULL;
 
-    long long strength = _to_stat_traverse(context->initiator, "Strength");
+    long long strength = to_value_accumulate(context->initiator, "Strength");
 
     for(int i = 0; i < TO_WORLD_MAX_CREATURES; ++i) {
         Attribute* creature = context->world->creatures[i];

@@ -1,6 +1,5 @@
 #include "to_world.h"
 
-
 World* to_create_world() {
     World* world = malloc(sizeof(World));
 
@@ -130,4 +129,14 @@ int to_world_set_tile(World* world, long long xPos, long long yPos, char* materi
     chunk->tiles[xRelative][yRelative] = tile;
 
     return 1;
+}
+
+void to_world_summon_gods(World* world) {
+    Attribute* slimeGod = to_create_set_attribute("Slime Semi-God");
+
+    to_set_append_attribute(slimeGod, to_create_tag_attribute("Monster"));
+    to_set_append_attribute(slimeGod, to_create_tag_attribute("Slime"));
+    to_set_append_attribute(slimeGod, to_create_tag_attribute("Semi-God"));
+
+    to_world_summon_creature(world, slimeGod);
 }

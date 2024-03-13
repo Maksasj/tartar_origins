@@ -10,7 +10,7 @@ EffectResult* _to_movement_attribute_callback(EffectContext* context, EffectUse*
 
     long long xCord;
     long long yCord;
-    if(!_to_get_position(context->domain, &xCord, &yCord))
+    if(!_to_get_position(context->initiator, &xCord, &yCord))
         return NULL;
 
     long long xDelta = abs(xCord - m.xCord);
@@ -19,7 +19,7 @@ EffectResult* _to_movement_attribute_callback(EffectContext* context, EffectUse*
     if((xDelta > WALK_DISTANCE) || yDelta > WALK_DISTANCE)
         return NULL;
 
-    _to_set_position(context->domain, m.xCord, m.yCord);
+    _to_set_position(context->initiator, m.xCord, m.yCord);
 
     return NULL;
 }
