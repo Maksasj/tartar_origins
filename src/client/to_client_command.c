@@ -92,6 +92,9 @@ void to_client_map_callback(TOClient* client, int argc, char* argv[]) {
             if(to_set_find_attribute_name(entity, "Humanoid") != NULL)
                 character = 'H';
 
+            if(to_set_find_attribute_name(entity, "Monster") != NULL)
+                character = 'M';
+
             if(character == '?')
                 to_attribute_stringify(entity);
 
@@ -188,6 +191,37 @@ void to_client_ghand_callback(TOClient* client, int argc, char* argv[]) {
         use.xCord += 1;
 
     to_send_use_request(client->socket, "ghand", &use, sizeof(use));
+
+    TOUseResponse useResponse;
+    to_recv_use_response(client->socket, &useResponse);
+}
+
+void to_client_slashing_callback(TOClient* client, int argc, char* argv[]) {
+    if(argc <= 1)
+        return;
+
+    Attribute* self = _to_get_self(client);
+    if(self == NULL)
+        return;
+
+    SlashingUse use;
+    if(!_to_get_position(self, &use.xCord, &use.yCord)) {
+        to_free_attribute(self);
+        return;
+    }
+
+    to_free_attribute(self);
+
+    if(strcmp(argv[1], "up") == 0)
+        use.yCord += 1;
+    else if(strcmp(argv[1], "down") == 0)
+        use.yCord -= 1;
+    else if(strcmp(argv[1], "left") == 0)
+        use.xCord -= 1;
+    else if(strcmp(argv[1], "right") == 0)
+        use.xCord += 1;
+
+    to_send_use_request(client->socket, "slashing", &use, sizeof(use));
 
     TOUseResponse useResponse;
     to_recv_use_response(client->socket, &useResponse);

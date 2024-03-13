@@ -12,29 +12,6 @@ EffectResult* _to_vision_attribute_callback(EffectContext* context, EffectUse* u
 
     EffectResult* result = to_create_effect_result();
 
-    // First lets add all creatures
-    // Todo check this part
-    for(int i = 0; i < 1024; ++i) {
-        Attribute* creature = context->world->creatures[i];
-
-        if(creature == NULL)
-            continue;
-
-        long long yCordCreature;
-        long long xCordCreature;
-        if(!_to_get_position(creature, &xCordCreature, &yCordCreature))
-            continue;
-
-        double x = (double) xCord - (double )xCordCreature;
-        double y = (double) yCord - (double )yCordCreature;
-        double distanceSqr = x*x + y*y;
-
-        if(distanceSqr > VISION_DISTANCE * VISION_DISTANCE)
-            continue;
-
-        to_append_effect_result(result, creature);
-    }
-
     for(int x = -VISION_DISTANCE; x < VISION_DISTANCE; ++x) {
         for(int y = -VISION_DISTANCE; y < VISION_DISTANCE; ++y) {
             long long tileXCord = xCord + x;
@@ -51,6 +28,28 @@ EffectResult* _to_vision_attribute_callback(EffectContext* context, EffectUse* u
                 to_append_effect_result(result, tile);
             }
         }
+    }
+
+    // Todo check this part
+    for(int i = 0; i < TO_WORLD_MAX_CREATURES; ++i) {
+        Attribute* creature = context->world->creatures[i];
+
+        if(creature == NULL)
+            continue;
+
+        long long yCordCreature;
+        long long xCordCreature;
+        if(!_to_get_position(creature, &xCordCreature, &yCordCreature))
+            continue;
+
+        double x = (double) xCord - (double) xCordCreature;
+        double y = (double) yCord - (double) yCordCreature;
+        double distanceSqr = x*x + y*y;
+
+        if(distanceSqr > VISION_DISTANCE * VISION_DISTANCE)
+            continue;
+
+        to_append_effect_result(result, creature);
     }
 
     for(int i = 0; i < TO_SERVER_MAX_PLAYERS; ++i)

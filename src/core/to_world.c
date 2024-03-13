@@ -27,7 +27,7 @@ void todo_fill_chunk(Chunk* chunk) {
 }
 
 void to_world_create_chunk(World* world, long long xChunk, long long yChunk) {
-    for(int i = 0; i < 1024; ++i) {
+    for(int i = 0; i < TO_WORLD_MAX_CHUNKS; ++i) {
         if(world->chunks[i] != NULL)
             continue;
 
@@ -45,7 +45,7 @@ void to_world_create_chunk(World* world, long long xChunk, long long yChunk) {
 }
 
 Chunk* to_world_get_chunk(World* world, long long xChunk, long long yChunk) {
-    for(int i = 0; i < 1024; ++i) {
+    for(int i = 0; i < TO_WORLD_MAX_CHUNKS; ++i) {
         Chunk* chunk = world->chunks[i];
 
         if(chunk == NULL)
@@ -56,6 +56,18 @@ Chunk* to_world_get_chunk(World* world, long long xChunk, long long yChunk) {
     }
 
     return NULL;
+}
+
+int to_world_summon_creature(World* world, Attribute* creature) {
+    for(int i = 0; i < TO_WORLD_MAX_CREATURES; ++i) {
+        if(world->creatures[i] != NULL)
+            continue;
+
+        world->creatures[i] = creature;
+        return 1;
+    }
+
+    return 0;
 }
 
 Attribute* to_world_get_tile(World* world, long long xPos, long long yPos) {

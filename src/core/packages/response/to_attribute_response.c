@@ -9,7 +9,7 @@ int _to_send_attribute(int socket, Attribute* attribute) {
     if(attribute->info.type != SET_ATTRIBUTE)
         return 1;
 
-    for(int i = 0; i < attribute->set.count; ++i) {
+    for(int i = 0; i < TO_SET_ATTRIBUTE_MAX_CHILDS; ++i) {
         Attribute* at = attribute->set.attributes[i];
 
         if(at != NULL) {
@@ -30,7 +30,7 @@ Attribute* _to_recv_attribute(int socket) {
     if(attribute->info.type != SET_ATTRIBUTE)
         return attribute;
 
-    for(int i = 0; i < attribute->set.count; ++i) {
+    for(int i = 0; i < TO_SET_ATTRIBUTE_MAX_CHILDS; ++i) {
         Attribute* at = attribute->set.attributes[i];
 
         if(at != NULL)

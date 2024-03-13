@@ -5,10 +5,11 @@
 #define TO_SERVER_ADDRESS "127.0.0.1"
 
 TOClientCommand commands[] = {
-    { "self", to_client_get_self_callback   },
-    { "map",  to_client_map_callback        },
-    { "go",   to_client_go_callback         },
-    { "ghand",to_client_ghand_callback      }
+    { "self",       to_client_get_self_callback     },
+    { "map",        to_client_map_callback          },
+    { "go",         to_client_go_callback           },
+    { "ghand",      to_client_ghand_callback        },
+    { "slashing",   to_client_slashing_callback     }
 };
 unsigned int commandCount = sizeof(commands) / sizeof(TOClientCommand);
 

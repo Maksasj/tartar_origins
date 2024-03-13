@@ -8,7 +8,7 @@ int to_handle_client_connection_request_packet(TOServer* server, Connection* con
     return -1;
 }
 
-void _to_propagate_use(TOServer* server, Attribute* domain, EffectUse* use, Attribute*** attributes, unsigned long long* attributeCount) {
+void _to_propagate_use(TOServer* server, Attribute* initiator, Attribute* domain, EffectUse* use, Attribute*** attributes, unsigned long long* attributeCount) {
     if(domain->info.type != SET_ATTRIBUTE)
         return;
 
@@ -22,14 +22,14 @@ void _to_propagate_use(TOServer* server, Attribute* domain, EffectUse* use, Attr
             players[p] = NULL;
     }
 
-    for(int i = 0; i < domain->set.count; ++i) {
+    for(int i = 0; i < TO_SET_ATTRIBUTE_MAX_CHILDS; ++i) {
         Attribute* attribute = domain->set.attributes[i];
 
         if(attribute == NULL)
             continue;
 
         if(attribute->info.type == SET_ATTRIBUTE)
-            _to_propagate_use(server, attribute, use, attributes, attributeCount);
+            _to_propagate_use(server, initiator, attribute, use, attributes, attributeCount);
 
         if(attribute->info.type != EFFECT_ATTRIBUTE)
             continue;
@@ -37,6 +37,7 @@ void _to_propagate_use(TOServer* server, Attribute* domain, EffectUse* use, Attr
         // Prepare effect context
         EffectContext context;
         context.effect = attribute;
+        context.initiator = initiator;
         context.domain = domain;
         context.target= NULL;
         context.world = server->world;
@@ -62,7 +63,7 @@ int to_handle_use_request_packet(TOServer* server, Connection* con, EffectUse* u
     unsigned long long attributeCount = 0;
     Attribute** attributes = NULL;
 
-    _to_propagate_use(server, con->character, use, &attributes, &attributeCount);
+    _to_propagate_use(server, con->character, con->character, use, &attributes, &attributeCount);
 
     if(attributeCount == 0 || attributes == NULL) {
         if(to_send_use_response(con->socket, EMPTY_RESPONSE) == -1)

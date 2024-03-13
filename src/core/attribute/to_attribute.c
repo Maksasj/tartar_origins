@@ -80,25 +80,19 @@ Attribute* to_create_set_attribute(const char* name) {
 
     strcpy(attribute->info.name, name);
     attribute->info.type = SET_ATTRIBUTE;
-
-    attribute->set.count = 0;
     memset(attribute->set.attributes, 0, 16 * sizeof(Attribute*));
 
     return attribute;
 }
 
 Attribute* to_set_append_attribute(Attribute* set, Attribute* attribute) {
-    if(set->set.count >= 16)
-        return NULL;
-
-    for(int i = 0; i < 16; ++i) {
+    for(int i = 0; i < TO_SET_ATTRIBUTE_MAX_CHILDS; ++i) {
         Attribute* at = set->set.attributes[i];
 
         if(at != NULL)
             continue;
 
         set->set.attributes[i] = attribute;
-        ++set->set.count;
 
         return attribute;
     }
@@ -113,7 +107,7 @@ Attribute* to_set_find_attribute_name(Attribute* attribute, const char* name) {
     if(attribute->info.type != SET_ATTRIBUTE)
         return NULL;
 
-    for(int i = 0; i < attribute->set.count; ++i) {
+    for(int i = 0; i < TO_SET_ATTRIBUTE_MAX_CHILDS; ++i) {
         Attribute* at = attribute->set.attributes[i];
 
         if(at == NULL)
@@ -126,7 +120,26 @@ Attribute* to_set_find_attribute_name(Attribute* attribute, const char* name) {
     return NULL;
 }
 
+int to_set_remove_attribute_name(Attribute* attribute, const char* name) {
+    for(int i = 0; i < TO_SET_ATTRIBUTE_MAX_CHILDS; ++i) {
+        Attribute* at = attribute->set.attributes[i];
+
+        if(at == NULL)
+            continue;
+
+        if(strcmp(at->info.name, name) != 0)
+            continue;
+
+        to_free_attribute(attribute->set.attributes[i]);
+        attribute->set.attributes[i] = NULL;
+    }
+
+    return 0;
+}
+
 void _to_stringify_attribute(Attribute* attribute, int depth) {
+    if(attribute == NULL);
+
     for(int i = 0; i < depth; ++i)
         printf("    ");
 
@@ -141,8 +154,9 @@ void _to_stringify_attribute(Attribute* attribute, int depth) {
     } else if(type == SET_ATTRIBUTE) {
         printf("Set: [%s]\n", attribute->info.name);
 
-        for(int i = 0; i < attribute->set.count; ++i)
-            _to_stringify_attribute(attribute->set.attributes[i], depth + 1);
+        for(int i = 0; i < TO_SET_ATTRIBUTE_MAX_CHILDS; ++i)
+            if(attribute->set.attributes[i] != NULL)
+                _to_stringify_attribute(attribute->set.attributes[i], depth + 1);
     }
 }
 

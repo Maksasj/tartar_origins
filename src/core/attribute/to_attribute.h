@@ -15,7 +15,7 @@ typedef struct Tag {
 typedef struct Value {
     AttributeInfo info;
 
-    signed long long value;
+    long long value;
 } Value;
 
 typedef struct EffectUse {
@@ -33,11 +33,11 @@ typedef struct Effect {
     EffectCallback* effect;
 } Effect;
 
+#define TO_SET_ATTRIBUTE_MAX_CHILDS 16
+
 typedef struct AttributeSet {
     AttributeInfo info;
-
-    unsigned int count;
-    union Attribute* attributes[16];
+    union Attribute* attributes[TO_SET_ATTRIBUTE_MAX_CHILDS];
 } AttributeSet;
 
 typedef union Attribute {
@@ -57,7 +57,9 @@ Attribute* to_create_set_attribute(const char* name);
 
 // Returns 'attribute' if success, NULL if not
 Attribute* to_set_append_attribute(Attribute* set, Attribute* attribute);
+
 Attribute* to_set_find_attribute_name(Attribute* attribute, const char* name);
+int to_set_remove_attribute_name(Attribute* attribute, const char* name);
 
 void to_attribute_stringify(Attribute* attribute);
 

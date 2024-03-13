@@ -12,6 +12,7 @@ union Attribute;
 
 typedef struct EffectContext {
     union Attribute* effect;
+    union Attribute* initiator;
     union Attribute* domain;
     union Attribute* target;
     struct World* world;

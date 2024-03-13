@@ -5,12 +5,19 @@ TOServer* to_new_server(unsigned int port) {
     memset(server->connections, 0, sizeof(Connection*) * TO_SERVER_MAX_PLAYERS);
 
     World* world = to_create_world();
+    server->world = world;
 
     for(int x = -8; x < 8; ++x)
         for(int y = -8; y < 8; ++y)
             to_world_create_chunk(world, x, y);
 
-    server->world = world;
+    Attribute* monster = to_create_set_attribute("Slime");
+
+    to_set_append_attribute(monster, to_create_tag_attribute("Monster"));
+    to_set_append_attribute(monster, to_create_position_attribute(1, 1));
+    to_set_append_attribute(monster, to_create_value_attribute("Health", 5));
+
+    to_world_summon_creature(world, monster);
 
     #ifdef _WIN32
         WSADATA data;
