@@ -10,9 +10,9 @@ int to_client_connect(TOClient* client, const char* api, unsigned long port) {
     #ifdef _WIN32
         servaddr.sin_addr.s_addr = inet_addr(api);
     #else
-        if (inet_aton(argv[1], &servaddr.sin_addr) <= 0) {
-            fprintf(stderr,"ERROR #3: Invalid remote IP address.\n");
-            exit(1);
+        if (inet_aton(api, &servaddr.sin_addr) <= 0) {
+            TO_LOG(TO_ERROR, "Invalid remote IP adreess");
+            return -1;
         }
     #endif
 
