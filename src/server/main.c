@@ -18,11 +18,29 @@ int main() {
 
     fd_set socketSet;
 
+    // 1 Second timer
+    int timer1s = timerfd_create(CLOCK_REALTIME,  0);
+    struct itimerspec spec1s = { { 1, 0 }, { 1, 0 } };
+    timerfd_settime(timer1s, 0, &spec1s, NULL);
+
+    // 3 Minutes timer
+    int timer3m = timerfd_create(CLOCK_REALTIME,  0);
+    struct itimerspec spec3m = { { 3, 0 }, { 3, 0 } };
+    timerfd_settime(timer3m, 0, &spec3m, NULL);
+
     for(;;) {
         FD_ZERO(&socketSet);
 
         int maxFd = server->socket;
         FD_SET(server->socket, &socketSet);
+
+        FD_SET(timer1s, &socketSet);
+        if(timer1s > maxFd)
+            maxFd = timer1s;
+
+        FD_SET(timer3m, &socketSet);
+        if(timer3m > maxFd)
+            maxFd = timer3m;
 
         for(int i = 0; i < TO_SERVER_MAX_PLAYERS; ++i) {
             if(server->connections[i] == NULL)
@@ -36,6 +54,18 @@ int main() {
         }
 
         select(maxFd + 1, &socketSet, NULL , NULL, NULL);
+
+        // There we handle 1 second regular actions
+        if(FD_ISSET(timer1s, &socketSet)) {
+
+            timerfd_settime(timer1s, 0, &spec1s, NULL);
+        }
+
+        // There we handle 3 minutes regular actions
+        if(FD_ISSET(timer3m, &socketSet)) {
+            
+            timerfd_settime(timer3m, 0, &spec3m, NULL);
+        }
 
         if(FD_ISSET(server->socket, &socketSet)){
             Connection* con = to_server_accept_connections(server);
